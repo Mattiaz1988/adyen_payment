@@ -27,7 +27,9 @@
  */
 class Adyen_Payment_Block_Redirect extends Mage_Core_Block_Abstract {
 
-    /**
+    private $_helperLog;
+
+ 	/**
      * Collected debug information
      *
      * @var array
@@ -43,9 +45,16 @@ class Adyen_Payment_Block_Redirect extends Mage_Core_Block_Abstract {
             return $this->getOrder();
         } else {
             // log the exception
-            Mage::log("Redirect exception could not load the order:", Zend_Log::DEBUG, "adyen_notification.log", true);
+            $this->_getHelperLog()->log("Redirect exception could not load the order:", "notification");
             return null;
         }
+    }
+
+    protected function _getHelperLog() {
+        if (!$this->_helperLog) {
+            $this->_helperLog = Mage::helper('adyen/log');
+        }
+        return $this->_helperLog;
     }
 
     protected function _toHtml() {
@@ -104,6 +113,9 @@ class Adyen_Payment_Block_Redirect extends Mage_Core_Block_Abstract {
             $launchlink = "adyen://payment?sessionId=".session_id()."&amount=".$adyFields['paymentAmount']."&currency=".$adyFields['currencyCode']."&merchantReference=".$adyFields['merchantReference']. $recurring_parameters . $receiptOrderLines .  "&callback=".$url . $extra_paramaters;
 
             // log the launchlink
+            $this->_getHelperLog()->log("Launchlink:" . $launchlink, "notification");
+
+			// log the launchlink
             $this->_debugData['LaunchLink'] = $launchlink;
             $storeId = $order->getStoreId();
             $this->_debug($storeId);
@@ -231,7 +243,7 @@ class Adyen_Payment_Block_Redirect extends Mage_Core_Block_Abstract {
                             </script>
                     ';
                 } else {
-                    Mage::log("You did not fill in all the fields (ip,port,device id) to use Cash Drawer support:", Zend_Log::DEBUG, "adyen_notification.log", true);
+                    $this->_getHelperLog()->log("You did not fill in all the fields (ip,port,device id) to use Cash Drawer support:", "notification");
                 }
             } else {
                 $html.= '<script type="text/javascript">document.getElementById("'.$payment->getCode().'").submit();</script>';
