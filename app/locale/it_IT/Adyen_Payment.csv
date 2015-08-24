@@ -1,0 +1,85 @@
+You will be redirected to Adyen website when you place an order.,New column
+%s ( Qty: %s ) (Price: %s %s ) <br />,%s ( Q.tà: %s ) (Prezzo: %s %s ) <br />
+Adyen %s <br /> authResult: %s <br /> pspReference: %s,Adyen %s <br /> authResult: %s <br /> pspReference: %s
+Adyen %s <br /> eventCode: %s <br /> pspReference: %s <br /> success: %s,Adyen %s <br /> eventCode: %s <br /> pspReference: %s <br /> success: %s
+Adyen response(s): %s <br /> pspReference: %s,Adyen response(s): %s <br /> pspReference: %s
+Authorize Only,Autorizza
+Authorize and Capture,Autorizza e Cattura
+Can not connect payment service. Please try again later.,Impossibile collegarsi al servizio di pagamento. Si prega di riprova più tardi.
+Capture Mode set to Manual,Capture Mode set to Manual
+Customer was redirected to Adyen.,Customer was redirected to Adyen.
+Order can not Hold,Order can not Hold
+Order can not be canceled,Order can not be canceled
+Order rows: <br />,Order rows: <br />
+Shipment cost: %s %s <br />,Shipment cost: %s %s <br />
+"System error, please try again later","System error, please try again later"
+"System error, please try again later: %s","System error, please try again later: %s"
+The payment is REFUSED by Adyen.,The payment is REFUSED by Adyen.
+You will be redirected to Adyen in a few seconds.,You will be redirected to Adyen in a few seconds.
+"Your payment failed, Please try again later","Your payment failed, Please try again later"
+--Please Select--,--Please Select--
+Account Number,Account Number
+Account holder name,Account holder name
+Account holder: %s,Account holder: %s
+Account number: xxx%s,Account number: xxx%s
+Bank Location,Bank Location
+Bank Location (City),Bank Location (City)
+Bank Location ID,Bank Location ID
+Bank Name,Bank Name
+Bank code: %s,Bank code: %s
+Bank name: %s,Bank name: %s
+Card Verification Number,CVC/CVV
+Credit Card Number,Credit Card Number
+Credit Card Number: xxxx-%s,Credit Card Number: xxxx-%s
+Credit Card Type,Credit Card Type
+Credit Card Type: %s,Credit Card Type: %s
+Expiration Date,Expiration Date
+Expiration Date: %s/%s,Expiration Date: %s/%s
+Name on Card,Name on Card
+Name on the Card: %s,Name on the Card: %s
+Payment Method: %s,Metodo di pagamento: %s
+Submitting payment information...,Submitting payment information...
+What is this?, What is this?
+Order email sent to shopper.,Order email sent to shopper.
+The payment is PENDING by Adyen.,The payment is PENDING by Adyen.
+The payment is AUTHORIZED by Adyen.,The payment is AUTHORIZED by Adyen.
+There has an error occurred with your Adyen payment.,There has an error occurred with your Adyen payment.
+There was an error with your payment.,There was an error with your payment.
+You will be redirected to Adyen website when you place an order.,You will be redirected to Adyen website when you place an order.
+Your payment is cancelled.,Your payment is cancelled.
+Your payment is CANCELLED,Your payment is CANCELLED
+Your payment is pending.,Your payment is pending.
+Your payment is refused.,Your payment is refused.
+Your payment is authorized.,Your payment is authorized.
+Adyen Credit Card,Carta di Credito
+c_cash,Cash
+directEbanking,Sofort
+Cash,Contrassegno
+Payment Fee,Costo Aggiuntivo
+Payment Fee Installments,Payment Fee Installments
+Refund Payment Fee,Rimborso Costo Aggiuntivo
+Refund Payment Fee (Excl. Tax),Rimborso Costo Aggiuntivo (Escl. Tasse)
+Refund Payment Fee (Incl. Tax),Rimborso Costo Aggiuntivo (Incl. Tasse)
+What is this?, Cos'è questo?
+Remember these details, Ricorda i dettagli della carta di credito
+Pay directly with,Oppure paga direttamente con
+Pay using previously stored details, Paga usando i dati delle carte registrate precedentemente
+Or pay using one of the methods below, O paga con uno dei metodi seguenti
+"Payment Method: %s","Metodo di pagamento: %s"
+"pm.c_cash.buttonName","Contrassegno"
+
+
+My saved cards, Le mie carte
+My Saved cards, Le mie carte
+There are no saved cards for this account., Non ci sono carte salvate per questo utente.
+Credit Card Number, Numero di carta di credito
+Expiration Date, Data di scadenza
+"(update)", "(aggiorna)"
+Remove Card, Rimuovi carta
+Back, Torna indietro
+Name on card, Nome sulla carta
+Card Type, Tipo di carta
+The card has been deleted., La carta di credito è stata cancellata.
+"The card has not been deleted, please contact us.", "La carta di credito è stata cancellata, ti preghiamo di contattarci."
+Saved Cards, Carte salvate
+Payment Method is compulsory in order to process your payment, Metodo di pagamento obbligatorio per completare il processo di pagamento
