@@ -50,9 +50,50 @@
             <?php echo $this->__('Bank: %s', $this->htmlEscape($label)) ?><br/>
         <?php endif; ?>            
     <?php endif; ?>
+            
+    <!-- SOFORT -->
+    <?php if($_info->getOwnerName() != null && $_info->getOwnerName() != ""): ?>
+        <?php echo Mage::helper('adyen')->__('Payer Owner Name: %s', $this->htmlEscape($_info->getOwnerName())) ?> <br/>
+    <?php endif; ?>
+    <?php if($_info->getBankName() != null && $_info->getBankName() != ""): ?>
+        <?php echo Mage::helper('adyen')->__('Payer Bank Name: %s', $this->htmlEscape($_info->getBankName())) ?> <br/>
+    <?php endif; ?>
+    <?php if($_info->getIban() != null && $_info->getIban() != ""): ?>
+        <?php echo Mage::helper('adyen')->__('Payer IBAN: %s', $this->htmlEscape($_info->getIban())) ?> <br/>
+    <?php endif; ?>
+    <?php if($_info->getBic() != null && $_info->getBic() != ""): ?>
+        <?php echo Mage::helper('adyen')->__('Payer BIC: %s', $this->htmlEscape($_info->getBic())) ?> <br/>
+    <?php endif; ?>
+    
+    <!-- PAYPAL -->
+    <?php if($_info->getPayerStatus() != null && $_info->getPayerStatus() != ""): ?>
+        <?php echo Mage::helper('adyen')->__('Payer Status: %s', $this->htmlEscape($_info->getPayerStatus())) ?> <br/>
+    <?php endif; ?>
+    <?php if($_info->getPayerCountry() != null && $_info->getPayerCountry() != ""): ?>
+        <?php echo Mage::helper('adyen')->__('Payer Country: %s', $this->htmlEscape($_info->getPayerCountry())) ?> <br/>
+    <?php endif; ?>
+    <?php if($_info->getProtectionEligibility() != null && $_info->getProtectionEligibility() != ""): ?>
+        <?php echo Mage::helper('adyen')->__('Payer Protection Eligibility: %s', $this->htmlEscape($_info->getProtectionEligibility())) ?> <br/>
+    <?php endif; ?>
+    <?php if($_info->getPayerEmail() != null && $_info->getPayerEmail() != ""): ?>
+        <?php echo Mage::helper('adyen')->__('Payer Email: %s', $this->htmlEscape($_info->getPayerEmail())) ?> <br/>
+    <?php endif; ?>
+    <?php if($_info->getPaypalEmail() != null && $_info->getPaypalEmail() != ""): ?>
+        <?php echo Mage::helper('adyen')->__('Paypal Payer Email: %s', $this->htmlEscape($_info->getPaypalEmail())) ?> <br/>
+    <?php endif; ?>
+    <?php if($_info->getPaypalPayerId() != null && $_info->getPaypalPayerId() != ""): ?>
+        <?php echo Mage::helper('adyen')->__('Paypal Payer Id: %s', $this->htmlEscape($_info->getPaypalPayerId())) ?> <br/>
+    <?php endif; ?>
+    <?php if($_info->getPaypalPayerResidenceCountry() != null && $_info->getPaypalPayerResidenceCountry() != ""): ?>
+        <?php echo Mage::helper('adyen')->__('Paypal Payer Residence Country: %s', $this->htmlEscape($_info->getPaypalPayerResidenceCountry())) ?> <br/>
+    <?php endif; ?>
+        
+    <!-- KLARNA -->
     <?php if($_info->getAdyenKlarnaNumber() != null && $_info->getAdyenKlarnaNumber() != ""): ?>
         <?php echo Mage::helper('adyen')->__('Klarna reservation number: %s', $this->htmlEscape($_info->getAdyenKlarnaNumber())) ?> <br/>
     <?php endif; ?>
+    
+    <!-- GENERAL -->    
     <?php if($this->htmlEscape($this->getInfo()->getAdyenRefusalReasonRaw()) != ""): ?>
         <?php echo Mage::helper('adyen')->__('Raw acquirer response: %s', $this->htmlEscape($this->getInfo()->getAdyenRefusalReasonRaw())) ?><br/>
     <?php endif; ?>
