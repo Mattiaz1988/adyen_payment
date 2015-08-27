@@ -372,7 +372,7 @@ abstract class Adyen_Payment_Model_Adyen_Abstract extends Mage_Payment_Model_Met
                 Mage::getSingleton('customer/session')->setRedirectUrl("adyen/process/validate3d");
                 $this->_addStatusHistory($payment, $responseCode, $pspReference, $this->_getConfigData('order_status'));
                 break;
-            case "Cancelled": //added for FRAUD-CANCELLED refusal reasons
+			case "Cancelled": //added for FRAUD-CANCELLED refusal reasons
             case "Refused":
 
                 if($response->paymentResult->refusalReason) {
@@ -380,23 +380,23 @@ abstract class Adyen_Payment_Model_Adyen_Abstract extends Mage_Payment_Model_Met
                     $refusalReason = $response->paymentResult->refusalReason;
                     switch($refusalReason) {
                         case "Transaction Not Permitted":
-                            $errorMsg = Mage::helper('adyen')->__('The transaction is not permitted.');
+                            $errorMsg = $this->_getHelper()->__('The transaction is not permitted.');
                             break;
                         case "CVC Declined":
-                            $errorMsg = Mage::helper('adyen')->__('Declined due to the Card Security Code(CVC) being incorrect. Please check your CVC code!');
+                            $errorMsg = $this->_getHelper()->__('Declined due to the Card Security Code(CVC) being incorrect. Please check your CVC code!');
                             break;
                         case "Restricted Card":
-                            $errorMsg = Mage::helper('adyen')->__('The card is restricted.');
+                            $errorMsg = $this->_getHelper()->__('The card is restricted.');
                             break;
                         case "803 PaymentDetail not found":
-                            $errorMsg = Mage::helper('adyen')->__('The payment is REFUSED because the saved card is removed. Please try an other payment method.');
+                            $errorMsg = $this->_getHelper()->__('The payment is REFUSED because the saved card is removed. Please try an other payment method.');
                             break;
                         default:
-                            $errorMsg = Mage::helper('adyen')->__('The payment is REFUSED by Adyen.');
+                            $errorMsg = $this->_getHelper()->__('The payment is REFUSED by Adyen.');
                             break;
                     }
                 } else {
-                    $errorMsg = Mage::helper('adyen')->__('The payment is REFUSED by Adyen.');
+                    $errorMsg = $this->_getHelper()->__('The payment is REFUSED by Adyen.');
                 }
 
                 Adyen_Payment_Exception::throwException($errorMsg);
@@ -420,7 +420,7 @@ abstract class Adyen_Payment_Model_Adyen_Abstract extends Mage_Payment_Model_Met
                 $this->_addStatusHistory($payment, $responseCode, $pspReference);
                 break;
             case "Error":
-                $errorMsg = Mage::helper('adyen')->__('System error, please try again later');
+                $errorMsg = $this->_getHelper()->__('System error, please try again later');
                 Adyen_Payment_Exception::throwException($errorMsg);
                 break;
             default:
