@@ -206,6 +206,7 @@ abstract class Adyen_Payment_Model_Adyen_Abstract extends Mage_Payment_Model_Met
         return $this;
     }
 
+
     public function authorise3d(Varien_Object $payment, $amount) {
         $authorizeResponse = $this->_processRequest($payment, $amount, "authorise3d");
         $responseCode = $authorizeResponse->paymentResult->resultCode;
@@ -634,6 +635,10 @@ abstract class Adyen_Payment_Model_Adyen_Abstract extends Mage_Payment_Model_Met
                     return false;
                 }
             }
+
+            if ($quote->getGrandTotal() < 0.0001) {
+                return false;
+            }
         }
         return true;
     }
@@ -662,6 +667,14 @@ abstract class Adyen_Payment_Model_Adyen_Abstract extends Mage_Payment_Model_Met
 
     public function getConfigDataWsPassword($storeId = null) {
         return $this->_getHelper()->getConfigDataWsPassword($storeId);
+    }
+    
+    public function getConfigDataReportWsUserName($storeId = null) {
+        return $this->_getHelper()->getConfigDataReportWsUserName($storeId);
+    }
+
+    public function getConfigDataReportWsPassword($storeId = null) {
+        return $this->_getHelper()->getConfigDataReportWsPassword($storeId);
     }
 
     public function getAvailableBoletoTypes() {
