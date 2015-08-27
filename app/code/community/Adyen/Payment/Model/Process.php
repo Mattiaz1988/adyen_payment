@@ -50,6 +50,8 @@ class Adyen_Payment_Model_Process extends Mage_Core_Model_Abstract {
         $paymentMethod = $varienObj->getData('paymentMethod');
         $merchantSig = $varienObj->getData('merchantSig');
 
+        $this->_getHelperLog()->log($varienObj->getData(), "process");
+
         $sign = $pspReference .
             $merchantReference .
             $skinCode .
