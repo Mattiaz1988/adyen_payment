@@ -39,6 +39,7 @@ class Adyen_Payment_ProcessController extends Mage_Core_Controller_Front_Action 
      * need to be redeclared
      */
     protected $_redirectBlockType = 'adyen/redirect';
+    private $_helperLog;
 
     /**
      * @desc Soap Interface/Webservice
@@ -216,8 +217,9 @@ class Adyen_Payment_ProcessController extends Mage_Core_Controller_Front_Action 
                             $order->setState(Mage_Sales_Model_Order::STATE_PAYMENT_REVIEW, true,
                                 Mage::helper('adyen')->__('3D-secure validation was successful.'))->save();
                             $this->_redirect('checkout/onepage/success');
-                        }
-                        else {
+                        } else {
+                            //mattia. debugging log
+                            $this->_getHelperLog()->log("3D-secure validation was unsuccessful", "authorise3d");
                             $order->addStatusHistoryComment(Mage::helper('adyen')->__('3D-secure validation was unsuccessful.'))->save();
                             $session->addException($e, Mage::helper('adyen')->__($e->getMessage()));
                             $this->cancel();
@@ -593,4 +595,14 @@ class Adyen_Payment_ProcessController extends Mage_Core_Controller_Front_Action 
         return Mage::helper('adyen')->_getConfigData($code, $paymentMethodCode, $storeId);
     }
 
-}
+    /**
+     *
+     * @return type
+     */
+    protected function getHelperLog() {
+        if (!$this->_helperLog) {
+            $this->_helperLog = Mage::helper('adyen/log');
+        }
+        return $this->_helperLog;
+    }
+
