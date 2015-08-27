@@ -27,6 +27,11 @@
  */
 class Adyen_Payment_Helper_Data extends Mage_Payment_Helper_Data
 {
+	
+	/** @var Adyen_Core_Model_Factory */
+    protected $factory = null;
+    private $_helperLog;
+
     const XML_PATH_HPP_PAYMENT_METHOD_FEE   = 'payment/adyen_hpp/fee';
     /**
      * @return array
@@ -360,6 +365,24 @@ class Adyen_Payment_Helper_Data extends Mage_Payment_Helper_Data
         return $ccType;
     }
 
+	public function getAdditionalInformationField($field,$transactionAdditionalInfo){
+        $found = 0;
+        $existsAdditionalDataEntry = 0;
+        foreach($transactionAdditionalInfo['raw_details_info'] as $index => $value){
+            if(strstr($index,'additionalData_entry') || $existsAdditionalDataEntry){
+                if($found == 1){
+                    return $value;
+                }
+                else if(strstr($index,'_key') && $value == $field){
+                    $found = 1;
+                    continue;
+                }
+                $existsAdditionalDataEntry = 1;
+            }
+        }
+        return null;
+    }
+
     /**
      * Used via Payment method.Notice via configuration ofcourse Y or N
      * @return boolean true on demo, else false
@@ -439,6 +462,8 @@ class Adyen_Payment_Helper_Data extends Mage_Payment_Helper_Data
      * @return string
      */
     public function getClientIp() {
+        $ipaddress = '';
+
         if (isset($_SERVER['HTTP_CLIENT_IP'])) {
             $ipaddress = $_SERVER['HTTP_CLIENT_IP'];
         } elseif(isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
@@ -480,6 +505,36 @@ class Adyen_Payment_Helper_Data extends Mage_Payment_Helper_Data
 
 
     /**
+     * normalize adyen response
+     * @param array $array
+     * @param array $origin
+     * @param string $keyToAdd
+     * @return array
+     */
+    public function getResponseArray(array $array, &$origin = null, $keyToAdd = null) {
+
+        if (!$origin) {
+            $origin = array();
+        }
+        if (!is_null($keyToAdd)) {
+            $keyToAdd .= "_";
+        }
+
+        foreach ($array as $key => $value) {
+
+            if (is_array($value)) {
+                $origin[$keyToAdd . (string) $key] = '';
+                $this->getResponseArray($value, $origin, $key);
+            } else {
+
+                $origin[$keyToAdd . (string) $key] = (string) $value;
+            }
+        }
+
+        return $origin;
+    }
+
+/**
      * Street format
      * @param type $address
      * @return Varien_Object
@@ -515,4 +570,31 @@ class Adyen_Payment_Helper_Data extends Mage_Payment_Helper_Data
         return $street;
     }
 
+    
+    /**
+     * @return Adyen_Core_Helper_Config
+     */
+    protected function helperConfig() {
+        return $this->getFactory()->helperConfig();
+    }
+    
+    /**
+     *
+     * @return Adyen_Core_Model_Factory
+     */
+    public function getFactory() {
+        if ($this->factory === null) {
+            $this->factory = new Adyen_Core_Model_Factory();
+        }
+        return $this->factory;
+    }
+
+    /**
+     *
+     * @param Adyen_Core_Model_Factory $factory
+     */
+    public function setFactory(Adyen_Core_Model_Factory $factory) {
+        $this->factory = $factory;
+    }
+    
 }
