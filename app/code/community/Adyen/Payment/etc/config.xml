@@ -192,6 +192,14 @@
                     </adyen_payment_billing_agreement>
                 </observers>
             </controller_action_predispatch>
+            <sales_order_shipment_save_after>
+                <observers>
+                    <adyen_payment_capture_invoice_on_shipment>
+                        <class>adyen/observer</class>
+                        <method>captureInvoiceOnShipment</method>
+                    </adyen_payment_capture_invoice_on_shipment>
+                </observers>
+            </sales_order_shipment_save_after>
         </events>
     </global>
 
@@ -306,6 +314,9 @@
                 <ws_password_test></ws_password_test>
                 <ws_username_live></ws_username_live>
                 <ws_password_live></ws_password_live>
+                <order_status>processing</order_status>
+                <payment_pending>pending</payment_pending>
+                <payment_authorized>processing</payment_authorized>
                 <allowspecific>0</allowspecific>
                 <disable_hpptypes>0</disable_hpptypes>
                 <sort_order>30</sort_order>
@@ -357,6 +368,7 @@
                 <active>0</active>
                 <model>adyen/adyen_openinvoice</model>
                 <group>adyen</group>
+                <order_status>pending</order_status>
                 <title>Adyen Open Invoice</title>
                 <openinvoicetypes>openinvoice</openinvoicetypes>
                 <gender_show>0</gender_show>
@@ -369,6 +381,7 @@
                 <active>0</active>
                 <model>adyen/adyen_cc</model>
                 <group>adyen</group>
+                <order_status>processing</order_status>
                 <title>Adyen Credit Card</title>
                 <debug>0</debug>
                 <enable_installments>0</enable_installments>
@@ -388,6 +401,7 @@
                 <active>0</active>
                 <model>adyen/adyen_oneclick</model>
                 <group>adyen</group>
+                <order_status>processing</order_status>
                 <title>Adyen OneClick</title>
                 <sort_order>1</sort_order>
                 <recurring_payment_type>ONECLICK</recurring_payment_type>
@@ -396,6 +410,7 @@
                 <active>0</active>
                 <model>adyen/adyen_elv</model>
                 <group>adyen</group>
+                <order_status>processing</order_status>
                 <visible_type>both</visible_type>
                 <title>Adyen ELV</title>
                 <sort_order>50</sort_order>
@@ -404,6 +419,7 @@
                 <active>0</active>
                 <model>adyen/adyen_boleto</model>
                 <group>adyen</group>
+                <order_status>processing</order_status>
                 <visible_type>both</visible_type>
                 <title>Adyen Boleto</title>
                 <delivery_days>5</delivery_days>
@@ -417,6 +433,7 @@
                 <visible_type>both</visible_type>
                 <title>Adyen SEPA</title>
                 <sort_order>60</sort_order>
+                <order_status>pending</order_status>
                 <validate_iban>0</validate_iban>
                 <allow_billing_agreement_wizard>0</allow_billing_agreement_wizard>
                 <flow>sales</flow>
@@ -506,6 +523,12 @@
                         <is_cvv_required>0</is_cvv_required>
                         <is_checkout>1</is_checkout>
                     </hipercard>
+                    <CUP>
+                        <code>CUP</code>
+                        <name>Unionpay</name>
+                        <order>90</order>
+                        <is_cvv_required>1</is_cvv_required>
+                    </CUP>
                 </cctypes>
                 <boletotypes>
                     <boletobancario_hsbc>
