@@ -34,6 +34,7 @@ class Adyen_Payment_Model_Adyen_Hpp extends Adyen_Payment_Model_Adyen_Abstract
      * @var GUEST_ID , used when order is placed by guests
      */
     const GUEST_ID = 'customer_';
+    const CODE = 'adyen_hpp';
 
     protected $_canUseInternal = false;
     protected $_code = 'adyen_hpp';
@@ -276,7 +277,9 @@ class Adyen_Payment_Model_Adyen_Hpp extends Adyen_Payment_Model_Adyen_Abstract
 //         $strsign = "merchantSig:pos.serial_number|" . $adyFields['merchantSig'] . ":" . $terminalcode;
 //         $signPOS = Zend_Crypt_Hmac::compute($secretWord, 'sha1', $strsign);
 //         $adyFields['pos.sig'] = base64_encode(pack('H*', $signPOS));
-        Mage::log($adyFields, self::DEBUG_LEVEL, 'adyen_http-request.log', true);
+
+        $this->_getHelperLog()->log($adyFields, 'http-request');
+
         return $adyFields;
     }
 
