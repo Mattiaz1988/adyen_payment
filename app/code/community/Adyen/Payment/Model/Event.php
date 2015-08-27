@@ -46,6 +46,9 @@ class Adyen_Payment_Model_Event extends Mage_Core_Model_Abstract {
     const ADYEN_EVENT_RECURRING_CONTRACT = "RECURRING_CONTRACT";
     const ADYEN_EVENT_REPORT_AVAILABLE = "REPORT_AVAILABLE";
     const ADYEN_EVENT_ORDER_CLOSED = "ORDER_CLOSED";
+    const ADYEN_EVENT_NOTIFICATION_OF_FRAUD = 'NOTIFICATION_OF_FRAUD';
+    const ADYEN_EVENT_NOTIFICATION_OF_CHARGEBACK = 'NOTIFICATION_OF_CHARGEBACK';
+    const ADYEN_EVENT_CHARGEBACK = 'CHARGEBACK';
 
     /**
      * Initialize resources
@@ -78,4 +81,23 @@ class Adyen_Payment_Model_Event extends Mage_Core_Model_Abstract {
         $originalReference = $this->getResource()->getOriginalPspReference($incrementId);
         return (!empty($originalReference)) ? $originalReference['psp_reference'] : false;
     }
+
+    public function loadByOrderId($orderId) {
+        $this->load($orderId, 'order_id');
+        return $this;
+    }
+
+    public function loadByQuoteId($orderId) {
+        $this->load($orderId, 'quote_id');
+        return $this;
+    }
+
+    public function getFraudData($orderId) {
+
+        $event = $this->loadByOrderId($orderId);
+        $fraudDataObj = json_decode(utf8_decode($event['adyen_event_response']));
+        $fraudData = @$fraudDataObj->fraudResult;
+        return $fraudData;
+    }
+
 }
