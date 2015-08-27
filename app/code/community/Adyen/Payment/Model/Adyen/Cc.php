@@ -34,6 +34,12 @@ class Adyen_Payment_Model_Adyen_Cc extends Adyen_Payment_Model_Adyen_Abstract
     protected $_paymentMethod = 'cc';
     protected $_canCreateBillingAgreement = true;
     protected $_ccTypes;
+    protected $_canUseCheckout = true;
+    protected $_canUseInternal = true;
+    protected $_isGateway = true;
+    protected $_ccTypes;
+
+    const CODE = "adyen_cc";
 
     /**
      * 1) Called everytime the adyen_cc is called or used in checkout

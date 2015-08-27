@@ -32,8 +32,10 @@ class Adyen_Payment_Model_Adyen_Oneclick extends Adyen_Payment_Model_Adyen_Cc {
     protected $_infoBlockType = 'adyen/info_oneclick';
     protected $_paymentMethod = 'oneclick';
     protected $_canUseInternal = true; // not possible through backoffice interface
+    protected $_isGateway = true;
     private $_customerInteraction;
 
+    const CODE = "adyen_oneclick";
 
     public function isAvailable($quote=null) {
         $isAvailble = parent::isAvailable($quote);
