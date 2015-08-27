@@ -147,42 +147,65 @@ abstract class Adyen_Payment_Model_Adyen_Abstract extends Mage_Payment_Model_Met
      */
     public function authorize(Varien_Object $payment, $amount) {
         parent::authorize($payment, $amount);
-        $payment->setLastTransId($this->getTransactionId())->setIsTransactionPending(true);
 
-        $order = $payment->getOrder();
-        /*
-         * Do not send a email notification when order is created.
-         * Only do this on the AUHTORISATION notification.
-         * For Boleto send it on order creation
-         */
-        if($this->getCode() != 'adyen_boleto') {
-            $order->setCanSendNewEmailFlag(false);
-        }
+        try {
 
-        if ($this->getCode() == 'adyen_boleto' || $this->getCode() == 'adyen_cc' || substr($this->getCode(), 0, 14) == 'adyen_oneclick' || $this->getCode() == 'adyen_elv' || $this->getCode() == 'adyen_sepa') {
+			$order = $payment->getOrder();
+		    /*
+		     * Do not send a email notification when order is created.
+		     * Only do this on the AUHTORISATION notification.
+		     * For Boleto send it on order creation
+		     */
+		    if($this->getCode() != 'adyen_boleto') {
+		        $order->setCanSendNewEmailFlag(false);
+		    }
+            $orderId = $order->getQuote()->getReservedOrderId();
+            $this->_getHelperLog()->log("sendAuthoriseRequest orderId : " . $orderId . " amount: $amount", "authorise");
+            $merchantAccount = trim($this->_getConfigData('merchantAccount'));
+            $payment->setIsTransactionPending(true);
 
-            if(substr($this->getCode(), 0, 14) == 'adyen_oneclick') {
+		    if ($this->getCode() == 'adyen_boleto' || $this->getCode() == 'adyen_cc' || substr($this->getCode(), 0, 14) == 'adyen_oneclick' || $this->getCode() == 'adyen_elv' || $this->getCode() == 'adyen_sepa') {
 
-                // set payment method to adyen_oneclick otherwise backend can not view the order
-                $payment->setMethod("adyen_oneclick");
+		        if(substr($this->getCode(), 0, 14) == 'adyen_oneclick') {
 
-                $recurringDetailReference = $payment->getAdditionalInformation("recurring_detail_reference");
+		            // set payment method to adyen_oneclick otherwise backend can not view the order
+		            $payment->setMethod("adyen_oneclick");
 
-                // load agreement based on reference_id (option to add an index on reference_id in database)
-                $agreement = Mage::getModel('sales/billing_agreement')->load($recurringDetailReference, 'reference_id');
+		            $recurringDetailReference = $payment->getAdditionalInformation("recurring_detail_reference");
 
-                // agreement could be a empty object
-                if ($agreement && $agreement->getAgreementId() > 0 && $agreement->isValid()) {
-                    $agreement->addOrderRelation($order);
-                    $agreement->setIsObjectChanged(true);
-                    $order->addRelatedObject($agreement);
-                    $message = Mage::helper('adyen')->__('Used existing billing agreement #%s.', $agreement->getReferenceId());
+		            // load agreement based on reference_id (option to add an index on reference_id in database)
+		            $agreement = Mage::getModel('sales/billing_agreement')->load($recurringDetailReference, 'reference_id');
 
-                    $comment = $order->addStatusHistoryComment($message);
-                    $order->addRelatedObject($comment);
-                }
-            }
-            $_authorizeResponse = $this->_processRequest($payment, $amount, "authorise");
+		            // agreement could be a empty object
+		            if ($agreement && $agreement->getAgreementId() > 0 && $agreement->isValid()) {
+		                $agreement->addOrderRelation($order);
+		                $agreement->setIsObjectChanged(true);
+		                $order->addRelatedObject($agreement);
+		                $message = Mage::helper('adyen')->__('Used existing billing agreement #%s.', $agreement->getReferenceId());
+
+		                $comment = $order->addStatusHistoryComment($message);
+		                $order->addRelatedObject($comment);
+		            }
+		        }
+		        $_authorizeResponse = $this->_processRequest($payment, $amount, "authorise");
+
+				//added unique trans ID with merchant and type of request behind pspreference
+				$payment->setLastTransId((string) $merchantAccount . '-A-' . $_authorizeResponse->paymentResult->pspReference)
+                        ->setTransactionId((string) $merchantAccount . '-A-' . $_authorizeResponse->paymentResult->pspReference)
+                        ->setAdyenPspReference((string) $_authorizeResponse->paymentResult->pspReference)
+						//raw details is very important for trx debugging in order to get needed data from each succesfull response                        
+						->setTransactionAdditionalInfo(Mage_Sales_Model_Order_Payment_Transaction::RAW_DETAILS, $this->_getHelper()->getResponseArray(json_decode(json_encode($_authorizeResponse), true)));
+            
+		    }
+
+			$payment->setAmount($amount)
+                    ->setStatus(self::STATUS_APPROVED)
+                    ->setIsTransactionClosed(false)
+                    ->setIsTransactionPending(false); //to prevent fraud
+
+        } catch (Exception $e) {
+            $this->_getHelperLog()->log($e->getMessage(), "authorise");
+            Mage::throwException($this->_getHelper()->__(self::ERROR_MESSAGE));
         }
         return $this;
     }
@@ -202,6 +225,30 @@ abstract class Adyen_Payment_Model_Adyen_Abstract extends Mage_Payment_Model_Met
         $order = $payment->getOrder();
         $pspReference = Mage::getModel('adyen/event')->getOriginalPspReference($order->getIncrementId());
         $order->getPayment()->getMethodInstance()->sendCaptureRequest($payment, $amount, $pspReference);
+
+		// processing payment
+        try {
+            $pspReference = Mage::getModel('adyen/event')->getOriginalPspReference($payment->getOrder()->getIncrementId());
+            //fix for unreceived notifications from adyen_hpp payment methods
+            if(!$pspReference){
+                $pspReference = $payment->getAdyenPspReference();
+            }
+            $this->writeLog("sendCaptureRequest pspReference : $pspReference amount: $amount");
+            $merchantAccount = trim($this->_getConfigData('merchantAccount'));
+
+            if (!$this->_getHelper()->isAutoCapture($payment) && ($this->getCode() == 'adyen_cc' || $this->getCode() == 'adyen_oneclick' || $this->getCode() == 'adyen_hpp' || $this->getCode() == 'adyen_boleto' || $this->getCode() == 'adyen_elv' || $this->getCode() == 'adyen_sepa')) {
+                $_captureResponse = $this->_processRequest($payment, $amount, "capture", $pspReference);
+
+                $payment->setTransactionId((string) $merchantAccount . '-C-' . $_captureResponse->captureResult->pspReference)
+                        ->setTransactionAdditionalInfo(Mage_Sales_Model_Order_Payment_Transaction::RAW_DETAILS, $this->_getHelper()->getResponseArray(json_decode(json_encode($_captureResponse), true)));
+            }
+
+            $payment->setAmount($amount)
+                    ->setShouldCloseParentTransaction($payment->getShouldCloseParentTransaction());
+        } catch (Exception $e) {
+            $this->_getHelperLog()->log($e->getMessage(), "capture");
+            Mage::throwException('capture ' . $incrmentOrderId . ': ' . $e->getMessage());
+        }
 
         return $this;
     }
@@ -227,8 +274,28 @@ abstract class Adyen_Payment_Model_Adyen_Abstract extends Mage_Payment_Model_Met
             $this->writeLog('oops empty pspReference');
             return $this;
         }
-        $this->writeLog("sendRefundRequest pspReference : $pspReference amount: $amount");
-        return $this->_processRequest($payment, $amount, "refund", $pspReference);
+        
+		$this->writeLog("sendRefundRequest pspReference : $pspReference amount: $amount");
+        try {
+            
+            /* $canRefundMore to 1 if a partial refound is requested */
+            $canRefundMore = $payment->getCreditmemo()->getInvoice()->canRefund();
+            $_refundResponse = $this->_processRequest($payment, $amount, "refund", $pspReference);
+            $merchantAccount = trim($this->_getConfigData('merchantAccount'));
+            
+            $this->_getHelperLog()->log($_refundResponse, "refund");
+            $payment->setTransactionId((string) $merchantAccount . '-R-' . $_refundResponse->refundResult->pspReference)
+                    ->setAmount($amount)
+                    ->setIsTransactionClosed(1)
+                    ->setShouldCloseParentTransaction(!$canRefundMore)
+                    ->setTransactionAdditionalInfo(Mage_Sales_Model_Order_Payment_Transaction::RAW_DETAILS, $this->_getHelper()->getResponseArray(json_decode(json_encode($_refundResponse), true)));
+      
+        } catch (Exception $e) {
+            $this->_getHelperLog()->log($e->getMessage(), "refund");
+            Mage::throwException('refund ' . $payment->getOrder()->getIncrementId() . ': ' . $e->getMessage());
+        }
+
+        return $_refundResponse;
     }
 
     public function SendCancelOrRefund(Varien_Object $payment, $pspReference) {
@@ -236,8 +303,26 @@ abstract class Adyen_Payment_Model_Adyen_Abstract extends Mage_Payment_Model_Met
             $this->writeLog('oops empty pspReference');
             return $this;
         }
-        $this->writeLog("sendCancelOrRefundRequest pspReference : $pspReference");
-        return $this->_processRequest($payment, null, "cancel_or_refund", $pspReference);
+
+		$this->writeLog("sendCancelOrRefundRequest pspReference : $pspReference");
+        try {
+            $_refundResponse = $this->_processRequest($payment, null, "cancel_or_refund", $pspReference);
+
+
+            $merchantAccount = trim($this->_getConfigData('merchantAccount'));
+
+            $this->_getHelperLog()->log($_refundResponse, "cancel");
+            $payment->setTransactionId((string) $merchantAccount . '-R-' . $_refundResponse->cancelOrRefundResult->pspReference)
+                    ->setAmount($payment->getOrder()->getBaseGrandTotal())
+                    ->setIsTransactionClosed(1)
+                    ->setShouldCloseParentTransaction(1)
+                    ->setTransactionAdditionalInfo(Mage_Sales_Model_Order_Payment_Transaction::RAW_DETAILS, $this->_getHelper()->getResponseArray(json_decode(json_encode($_refundResponse), true)));
+        } catch (Exception $e) {
+            $this->_getHelperLog()->log($e->getMessage(), "cancel");
+            Mage::throwException('refund ' . $payment->getOrder()->getIncrementId() . ': ' . $e->getMessage());
+        }
+
+        return $_refundResponse;
     }
 
     /**
