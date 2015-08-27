@@ -134,7 +134,7 @@ class Adyen_Payment_Model_Adyen_Pos extends Adyen_Payment_Model_Adyen_Abstract {
         $adyFields['shopperReference'] = (!empty($customerId)) ? $customerId : self::GUEST_ID . $realOrderId;
         $adyFields['shopperEmail'] = $customerEmail;
 
-        Mage::log($adyFields, self::DEBUG_LEVEL, 'adyen_http-request.log',true);
+        $this->_getHelperLog()->log($adyFields, 'http-request');
 
         return $adyFields;
     }
