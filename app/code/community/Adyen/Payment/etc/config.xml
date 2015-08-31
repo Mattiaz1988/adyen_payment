@@ -320,7 +320,6 @@
                 <allowspecific>0</allowspecific>
                 <disable_hpptypes>0</disable_hpptypes>
                 <sort_order>30</sort_order>
-                <cache_directory_lookup>0</cache_directory_lookup>
                 <return_url_in_request>0</return_url_in_request>
             </adyen_hpp>
             <adyen_ideal translate="title" module="adyen">
@@ -356,6 +355,7 @@
                 <group>adyen</group>
                 <title>Cash</title>
                 <sort_order>90</sort_order>
+                <create_shipment>1</create_shipment>
                 <visible_type>both</visible_type>
                 <cash_express_checkout>0</cash_express_checkout>
                 <cash_drawer>0</cash_drawer>

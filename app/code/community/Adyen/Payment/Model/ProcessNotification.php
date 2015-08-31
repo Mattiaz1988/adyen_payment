@@ -720,7 +720,7 @@ class Adyen_Payment_Model_ProcessNotification extends Mage_Core_Model_Abstract {
             $order->sendNewOrderEmail(); // send order email
         }
 
-        if($payment_method == "c_cash" || ($this->_getConfigData('create_shipment', 'adyen_pos', $order->getStoreId()) && $_paymentCode == "adyen_pos"))
+        if(($payment_method == "c_cash" && $this->_getConfigData('create_shipment', 'adyen_cash', $order->getStoreId())) || ($this->_getConfigData('create_shipment', 'adyen_pos', $order->getStoreId()) && $_paymentCode == "adyen_pos"))
         {
             $this->_createShipment($order);
         }
@@ -865,7 +865,15 @@ class Adyen_Payment_Model_ProcessNotification extends Mage_Core_Model_Abstract {
                 $createPendingInvoice = (bool) $this->_getConfigData('create_pending_invoice', 'adyen_abstract', $order->getStoreId());
 
                 if((!$autoCapture) && ($createPendingInvoice)) {
-                    $invoice->setRequestedCaptureCase(Mage_Sales_Model_Order_Invoice::NOT_CAPTURE);
+
+                    // if amount is zero create a offline invoice
+                    $value = (int)$this->_value;
+                    if($value == 0) {
+                        $invoice->setRequestedCaptureCase(Mage_Sales_Model_Order_Invoice::CAPTURE_OFFLINE);
+                    } else {
+                        $invoice->setRequestedCaptureCase(Mage_Sales_Model_Order_Invoice::NOT_CAPTURE);
+                    }
+
                     $invoice->register();
                 } else {
                     $invoice->register()->pay();
@@ -982,9 +990,15 @@ class Adyen_Payment_Model_ProcessNotification extends Mage_Core_Model_Abstract {
             $this->_createInvoice($order);
         }
 
-        $status = $this->_getConfigData('payment_authorized', 'adyen_abstract', $order->getStoreId());
+        // if you have capture on shipment enabled don't set update the status of the payment
+        $captureOnShipment = $this->_getConfigData('capture_on_shipment', 'adyen_abstract', $order->getStoreId());
+        if(!$captureOnShipment) {
+            $status = $this->_getConfigData('payment_authorized', 'adyen_abstract', $order->getStoreId());
+        }
+
         // virtual order can have different status
         if($order->getIsVirtual()) {
+            $this->_debugData['_setPaymentAuthorized virtual'] = 'Product is a virtual product';
             $virtual_status = $this->_getConfigData('payment_authorized_virtual');
             if($virtual_status != "") {
                 $status = $virtual_status;

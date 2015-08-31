@@ -140,12 +140,14 @@ class Adyen_Payment_Model_Adyen_Oneclick extends Adyen_Payment_Model_Adyen_Cc {
      * @desc CustomerInteraction is set by the recurring_payment_type or controlled by Adyen_Subscription module
      * @param $customerInteraction
      */
-    public function setCustomerInteraction($customerInteraction) {
-        $this->_customerInteraction = $customerInteraction;
+    public function setCustomerInteraction($customerInteraction)
+    {
+        $this->_customerInteraction = (bool) $customerInteraction;
     }
 
-    public function hasCustomerInteraction() {
-        if(!$this->_customerInteraction) {
+    public function hasCustomerInteraction()
+    {
+        if($this->_customerInteraction === null) {
             $recurringPaymentType = $this->getRecurringPaymentType();
             if($recurringPaymentType == "ONECLICK") {
                 $this->_customerInteraction = true;
@@ -159,7 +161,7 @@ class Adyen_Payment_Model_Adyen_Oneclick extends Adyen_Payment_Model_Adyen_Cc {
 
     public function getRecurringPaymentType()
     {
-     return $this->_getConfigData('recurring_payment_type', 'adyen_oneclick');
+        return $this->_getConfigData('recurring_payment_type', 'adyen_oneclick');
     }
 
     /**

@@ -147,6 +147,32 @@ abstract class Adyen_Payment_Model_Adyen_Abstract extends Mage_Payment_Model_Met
      */
     public function authorize(Varien_Object $payment, $amount) {
         parent::authorize($payment, $amount);
+        $payment->setLastTransId($this->getTransactionId())->setIsTransactionPending(true);
+
+        $order = $payment->getOrder();
+
+        // by zero authentication payment is authorised when api responds is succesfull
+        if($order->getGrandTotal() == 0) {
+            $payment->setIsTransactionPending(false);
+        }
+
+        /*
+         * Do not send a email notification when order is created.
+         * Only do this on the AUHTORISATION notification.
+         * For Boleto send it on order creation
+         */
+        if($this->getCode() != 'adyen_boleto') {
+            $order->setCanSendNewEmailFlag(false);
+        }
+
+        if ($this->getCode() == 'adyen_boleto' || $this->getCode() == 'adyen_cc' || substr($this->getCode(), 0, 14) == 'adyen_oneclick' || $this->getCode() == 'adyen_elv' || $this->getCode() == 'adyen_sepa') {
+
+            if(substr($this->getCode(), 0, 14) == 'adyen_oneclick') {
+
+                // set payment method to adyen_oneclick otherwise backend can not view the order
+                $payment->setMethod("adyen_oneclick");
+
+                $recurringDetailReference = $payment->getAdditionalInformation("recurring_detail_reference");
 
         try {
 
