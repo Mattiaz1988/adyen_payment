@@ -49,6 +49,8 @@ class Adyen_Payment_Model_Event extends Mage_Core_Model_Abstract {
     const ADYEN_EVENT_NOTIFICATION_OF_FRAUD = 'NOTIFICATION_OF_FRAUD';
     const ADYEN_EVENT_NOTIFICATION_OF_CHARGEBACK = 'NOTIFICATION_OF_CHARGEBACK';
     const ADYEN_EVENT_CHARGEBACK = 'CHARGEBACK';
+    
+    protected $_order;
 
     /**
      * Initialize resources
@@ -81,7 +83,45 @@ class Adyen_Payment_Model_Event extends Mage_Core_Model_Abstract {
         $originalReference = $this->getResource()->getOriginalPspReference($incrementId);
         return (!empty($originalReference)) ? $originalReference['psp_reference'] : false;
     }
+    
+    /**
+     * Retrieve order instance
+     *
+     * @return Mage_Sales_Model_Order
+     */
+    public function getOrder()
+    {
+        if ($this->_order === null) {
+            $this->setOrder();
+        }
 
+        return $this->_order;
+    }
+
+    /**
+     * Set order instance for transaction depends on transaction behavior
+     * If $order equals to true, method isn't loading new order instance.
+     *
+     * @param Mage_Sales_Model_Order|null|boolean $order
+     * @return Adyen_Payment_Model_Event
+     */
+    public function setOrder($order = null)
+    {
+        if (null === $order || $order === true) {
+            if ($this->getOrderId() && $order === null) {
+                $this->_order = Mage::getModel('sales/order')->load($this->getOrderId());
+            } else {
+                $this->_order = false;
+            }
+        } elseif (!$this->getId() || ($this->getOrderId() == $order->getId())) {
+            $this->_order = $order;
+        } else {
+            Mage::throwException(Mage::helper('sales')->__('Set order for existing transactions not allowed'));
+        }
+
+        return $this;
+    }
+    
     public function loadByOrderId($orderId) {
         $this->load($orderId, 'order_id');
         return $this;

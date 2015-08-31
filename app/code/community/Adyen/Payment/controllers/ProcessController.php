@@ -606,3 +606,4 @@ class Adyen_Payment_ProcessController extends Mage_Core_Controller_Front_Action 
         return $this->_helperLog;
     }
 
+}
