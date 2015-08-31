@@ -156,78 +156,60 @@ abstract class Adyen_Payment_Model_Adyen_Abstract extends Mage_Payment_Model_Met
             $payment->setIsTransactionPending(false);
         }
 
-        /*
-         * Do not send a email notification when order is created.
-         * Only do this on the AUHTORISATION notification.
-         * For Boleto send it on order creation
-         */
-        if($this->getCode() != 'adyen_boleto') {
-            $order->setCanSendNewEmailFlag(false);
-        }
-
-        if ($this->getCode() == 'adyen_boleto' || $this->getCode() == 'adyen_cc' || substr($this->getCode(), 0, 14) == 'adyen_oneclick' || $this->getCode() == 'adyen_elv' || $this->getCode() == 'adyen_sepa') {
-
-            if(substr($this->getCode(), 0, 14) == 'adyen_oneclick') {
-
-                // set payment method to adyen_oneclick otherwise backend can not view the order
-                $payment->setMethod("adyen_oneclick");
-
-                $recurringDetailReference = $payment->getAdditionalInformation("recurring_detail_reference");
-
         try {
 
-			$order = $payment->getOrder();
-		    /*
-		     * Do not send a email notification when order is created.
-		     * Only do this on the AUHTORISATION notification.
-		     * For Boleto send it on order creation
-		     */
-		    if($this->getCode() != 'adyen_boleto') {
-		        $order->setCanSendNewEmailFlag(false);
-		    }
-            $orderId = $order->getQuote()->getReservedOrderId();
-            $this->_getHelperLog()->log("sendAuthoriseRequest orderId : " . $orderId . " amount: $amount", "authorise");
-            $merchantAccount = trim($this->_getConfigData('merchantAccount'));
-            $payment->setIsTransactionPending(true);
+                    $order = $payment->getOrder();
+                /*
+                 * Do not send a email notification when order is created.
+                 * Only do this on the AUHTORISATION notification.
+                 * For Boleto send it on order creation
+                 */
+                if($this->getCode() != 'adyen_boleto') {
+                    $order->setCanSendNewEmailFlag(false);
+                }
+                $orderId = $order->getQuote()->getReservedOrderId();
+                $this->_getHelperLog()->log("sendAuthoriseRequest orderId : " . $orderId . " amount: $amount", "authorise");
+                $merchantAccount = trim($this->_getConfigData('merchantAccount'));
+                $payment->setIsTransactionPending(true);
 
-		    if ($this->getCode() == 'adyen_boleto' || $this->getCode() == 'adyen_cc' || substr($this->getCode(), 0, 14) == 'adyen_oneclick' || $this->getCode() == 'adyen_elv' || $this->getCode() == 'adyen_sepa') {
+                    if ($this->getCode() == 'adyen_boleto' || $this->getCode() == 'adyen_cc' || substr($this->getCode(), 0, 14) == 'adyen_oneclick' || $this->getCode() == 'adyen_elv' || $this->getCode() == 'adyen_sepa') {
 
-		        if(substr($this->getCode(), 0, 14) == 'adyen_oneclick') {
+                        if(substr($this->getCode(), 0, 14) == 'adyen_oneclick') {
 
-		            // set payment method to adyen_oneclick otherwise backend can not view the order
-		            $payment->setMethod("adyen_oneclick");
+                            // set payment method to adyen_oneclick otherwise backend can not view the order
+                            $payment->setMethod("adyen_oneclick");
 
-		            $recurringDetailReference = $payment->getAdditionalInformation("recurring_detail_reference");
+                            $recurringDetailReference = $payment->getAdditionalInformation("recurring_detail_reference");
 
-		            // load agreement based on reference_id (option to add an index on reference_id in database)
-		            $agreement = Mage::getModel('sales/billing_agreement')->load($recurringDetailReference, 'reference_id');
+                            // load agreement based on reference_id (option to add an index on reference_id in database)
+                            $agreement = Mage::getModel('sales/billing_agreement')->load($recurringDetailReference, 'reference_id');
 
-		            // agreement could be a empty object
-		            if ($agreement && $agreement->getAgreementId() > 0 && $agreement->isValid()) {
-		                $agreement->addOrderRelation($order);
-		                $agreement->setIsObjectChanged(true);
-		                $order->addRelatedObject($agreement);
-		                $message = Mage::helper('adyen')->__('Used existing billing agreement #%s.', $agreement->getReferenceId());
+                            // agreement could be a empty object
+                            if ($agreement && $agreement->getAgreementId() > 0 && $agreement->isValid()) {
+                                $agreement->addOrderRelation($order);
+                                $agreement->setIsObjectChanged(true);
+                                $order->addRelatedObject($agreement);
+                                $message = Mage::helper('adyen')->__('Used existing billing agreement #%s.', $agreement->getReferenceId());
 
-		                $comment = $order->addStatusHistoryComment($message);
-		                $order->addRelatedObject($comment);
-		            }
-		        }
-		        $_authorizeResponse = $this->_processRequest($payment, $amount, "authorise");
+                                $comment = $order->addStatusHistoryComment($message);
+                                $order->addRelatedObject($comment);
+                            }
+                        }
+                        $_authorizeResponse = $this->_processRequest($payment, $amount, "authorise");
 
-				//added unique trans ID with merchant and type of request behind pspreference
-				$payment->setLastTransId((string) $merchantAccount . '-A-' . $_authorizeResponse->paymentResult->pspReference)
+                                //added unique trans ID with merchant and type of request behind pspreference
+                                $payment->setLastTransId((string) $merchantAccount . '-A-' . $_authorizeResponse->paymentResult->pspReference)
                         ->setTransactionId((string) $merchantAccount . '-A-' . $_authorizeResponse->paymentResult->pspReference)
                         ->setAdyenPspReference((string) $_authorizeResponse->paymentResult->pspReference)
-						//raw details is very important for trx debugging in order to get needed data from each succesfull response                        
-						->setTransactionAdditionalInfo(Mage_Sales_Model_Order_Payment_Transaction::RAW_DETAILS, $this->_getHelper()->getResponseArray(json_decode(json_encode($_authorizeResponse), true)));
-            
-		    }
+                                                //raw details is very important for trx debugging in order to get needed data from each succesfull response                        
+                                                ->setTransactionAdditionalInfo(Mage_Sales_Model_Order_Payment_Transaction::RAW_DETAILS, $this->_getHelper()->getResponseArray(json_decode(json_encode($_authorizeResponse), true)));
 
-			$payment->setAmount($amount)
-                    ->setStatus(self::STATUS_APPROVED)
-                    ->setIsTransactionClosed(false)
-                    ->setIsTransactionPending(false); //to prevent fraud
+                    }
+
+                    $payment->setAmount($amount)
+                ->setStatus(self::STATUS_APPROVED)
+                ->setIsTransactionClosed(false)
+                ->setIsTransactionPending(false); //to prevent fraud
 
         } catch (Exception $e) {
             $this->_getHelperLog()->log($e->getMessage(), "authorise");
