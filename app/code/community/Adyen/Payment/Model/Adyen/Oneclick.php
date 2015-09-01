@@ -133,6 +133,10 @@ class Adyen_Payment_Model_Adyen_Oneclick extends Adyen_Payment_Model_Adyen_Cc {
             $quote->collectTotals();
         }
 
+        // get and set customer interaction needed for payment request
+        $this->hasCustomerInteraction();
+        $info->setAdditionalInformation('customer_interaction', $this->_customerInteraction);
+
         return $this;
     }
 
