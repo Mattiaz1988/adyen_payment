@@ -480,42 +480,42 @@
                                     <show_in_default>1</show_in_default>
                                     <show_in_website>1</show_in_website>
                                 </ws_live_button>
-								<report_ws_username_test translate="label">
-									<label>Adyen Reports ws username for Test</label>
-									<comment>Normally this will be ws@Company.YourCompanyCode</comment>
-									<frontend_type>text</frontend_type>
-									<sort_order>111</sort_order>
-									<show_in_default>1</show_in_default>
-									<show_in_website>1</show_in_website>
-									<show_in_store>0</show_in_store>
-								</report_ws_username_test>    
-								<report_ws_password_test translate="label">
-									<label>Adyen Reports ws password for Test</label>
-									<comment>The password of the ws user for Test</comment>
-									<frontend_type>text</frontend_type>
-									<sort_order>112</sort_order>
-									<show_in_default>1</show_in_default>
-									<show_in_website>1</show_in_website>
-									<show_in_store>0</show_in_store>
-								</report_ws_password_test>    
-								<report_ws_username_live translate="label">
-									<label>Adyen Reports ws username for Live</label>
-									<comment>Normally this will be ws@Company.YourCompanyCode</comment>
-									<frontend_type>text</frontend_type>
-									<sort_order>113</sort_order>
-									<show_in_default>1</show_in_default>
-									<show_in_website>1</show_in_website>
-									<show_in_store>0</show_in_store>
-								</report_ws_username_live>    
-								<report_ws_password_live translate="label">
-									<label>Adyen Reports ws password for Live</label>
-									<comment>The password of the ws user for Live</comment>
-									<frontend_type>text</frontend_type>
-									<sort_order>114</sort_order>
-									<show_in_default>1</show_in_default>
-									<show_in_website>1</show_in_website>
-									<show_in_store>0</show_in_store>
-								</report_ws_password_live>
+                                <report_ws_username_test translate="label">
+                                        <label>Adyen Reports ws username for Test</label>
+                                        <comment>Normally this will be ws@Company.YourCompanyCode</comment>
+                                        <frontend_type>text</frontend_type>
+                                        <sort_order>120</sort_order>
+                                        <show_in_default>1</show_in_default>
+                                        <show_in_website>1</show_in_website>
+                                        <show_in_store>0</show_in_store>
+                                </report_ws_username_test>    
+                                <report_ws_password_test translate="label">
+                                        <label>Adyen Reports ws password for Test</label>
+                                        <comment>The password of the ws user for Test</comment>
+                                        <frontend_type>text</frontend_type>
+                                        <sort_order>130</sort_order>
+                                        <show_in_default>1</show_in_default>
+                                        <show_in_website>1</show_in_website>
+                                        <show_in_store>0</show_in_store>
+                                </report_ws_password_test>    
+                                <report_ws_username_live translate="label">
+                                        <label>Adyen Reports ws username for Live</label>
+                                        <comment>Normally this will be ws@Company.YourCompanyCode</comment>
+                                        <frontend_type>text</frontend_type>
+                                        <sort_order>140</sort_order>
+                                        <show_in_default>1</show_in_default>
+                                        <show_in_website>1</show_in_website>
+                                        <show_in_store>0</show_in_store>
+                                </report_ws_username_live>    
+                                <report_ws_password_live translate="label">
+                                        <label>Adyen Reports ws password for Live</label>
+                                        <comment>The password of the ws user for Live</comment>
+                                        <frontend_type>text</frontend_type>
+                                        <sort_order>150</sort_order>
+                                        <show_in_default>1</show_in_default>
+                                        <show_in_website>1</show_in_website>
+                                        <show_in_store>0</show_in_store>
+                                </report_ws_password_live>
                             </fields>
                         </ws_api>
 
