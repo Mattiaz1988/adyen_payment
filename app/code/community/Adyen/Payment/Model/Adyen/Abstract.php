@@ -124,6 +124,11 @@ abstract class Adyen_Payment_Model_Adyen_Abstract extends Mage_Payment_Model_Met
         $order = $payment->getOrder();
         $pspReference = Mage::getModel('adyen/event')->getOriginalPspReference($order->getIncrementId());
 
+        //fix for unreceived notifications from adyen_hpp payment methods
+        if(!$pspReference){
+            $pspReference = $payment->getAdyenPspReference();
+        }
+
         // if amound is a full refund send a refund/cancelled request so if it is not captured yet it will cancel the order
         $grandTotal = $order->getBaseGrandTotal();
 
@@ -279,7 +284,7 @@ abstract class Adyen_Payment_Model_Adyen_Abstract extends Mage_Payment_Model_Met
     public function sendRefundRequest(Varien_Object $payment, $amount, $pspReference) {
         if (empty($pspReference)) {
             $this->writeLog('oops empty pspReference');
-            return $this;
+            Mage::throwException('oops empty pspReference');
         }
         
 	$this->writeLog("sendRefundRequest pspReference : $pspReference amount: $amount");
@@ -308,7 +313,7 @@ abstract class Adyen_Payment_Model_Adyen_Abstract extends Mage_Payment_Model_Met
     public function SendCancelOrRefund(Varien_Object $payment, $pspReference) {
         if (empty($pspReference)) {
             $this->writeLog('oops empty pspReference');
-            return $this;
+            Mage::throwException('oops empty pspReference');
         }
 
 	$this->writeLog("sendCancelOrRefundRequest pspReference : $pspReference");
