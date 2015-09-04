@@ -571,7 +571,7 @@ class Adyen_Payment_Model_ProcessNotification extends Mage_Core_Model_Abstract {
 
                     $cacheKey = $merchantAccount . "|" . $order->getCustomerId() . "|" . $recurringType;
                     Mage::app()->getCache()->remove($cacheKey);
-//                }
+                }
                 break;
             default:
                 $order->getPayment()->getMethodInstance()->writeLog('notification event not supported!');
