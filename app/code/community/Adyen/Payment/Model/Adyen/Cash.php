@@ -153,5 +153,20 @@ class Adyen_Payment_Model_Adyen_Cash extends Adyen_Payment_Model_Adyen_Abstract 
                 Mage::helper('adyen')->__('Got an empty response, status code %s', $httpStatus)
             );
         }
+        
+        //added it stability reasons
+        //added also in order to move order to specific order status setting non-prending trx
+        try {
+        
+             $payment->setAmount($amount)
+                    ->setStatus(self::STATUS_APPROVED)
+                    ->setIsTransactionClosed(false)
+                    ->setIsTransactionPending(false);
+
+        } catch (Exception $e) {
+            $this->_getHelperLog()->log($e->getMessage(), "authorise");
+            Mage::throwException($this->_getHelper()->__(self::ERROR_MESSAGE));
+        }
+        return $this;
     }
 }
