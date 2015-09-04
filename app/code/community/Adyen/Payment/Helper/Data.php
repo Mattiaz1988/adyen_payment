@@ -42,7 +42,7 @@ class Adyen_Payment_Helper_Data extends Mage_Payment_Helper_Data
         uasort($_types, array('Mage_Payment_Model_Config', 'compareCcTypes'));
         $types = array();
         foreach ($_types as $data) {
-            if (! $data['is_checkout']) {
+            if (! @$data['is_checkout']) {
                 continue;
             }
             $types[$data['code']] = $data['name'];
@@ -60,7 +60,7 @@ class Adyen_Payment_Helper_Data extends Mage_Payment_Helper_Data
         uasort($_types, array('Mage_Payment_Model_Config', 'compareCcTypes'));
         $types = array();
         foreach ($_types as $data) {
-            $types[$data['code_alt']] = $data;
+            $types[@$data['code_alt']] = $data;
         }
         return $types;
     }

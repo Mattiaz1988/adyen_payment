@@ -76,7 +76,6 @@
                                 </version>
                             </fields>
                         </adyen_getting_started>
-
                         <adyen_required_settings type="group" translate="label comment tooltip">
                             <label>Required Settings</label>
                             <frontend_type>text</frontend_type>
@@ -192,6 +191,42 @@
                                     <show_in_default>1</show_in_default>
                                     <show_in_website>1</show_in_website>
                                 </ws_live_button>
+                                <report_ws_username_test translate="label">
+                                    <label>Adyen Reports ws username for Test</label>
+                                    <comment>Normally this will be ws@Company.YourCompanyCode</comment>
+                                    <frontend_type>text</frontend_type>
+                                    <sort_order>116</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>0</show_in_store>
+                                </report_ws_username_test>    
+                                <report_ws_password_test translate="label">
+                                    <label>Adyen Reports ws password for Test</label>
+                                    <comment>The password of the ws user for Test</comment>
+                                    <frontend_type>text</frontend_type>
+                                    <sort_order>117</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>0</show_in_store>
+                                </report_ws_password_test>    
+                                <report_ws_username_live translate="label">
+                                    <label>Adyen Reports ws username for Live</label>
+                                    <comment>Normally this will be ws@Company.YourCompanyCode</comment>
+                                    <frontend_type>text</frontend_type>
+                                    <sort_order>118</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>0</show_in_store>
+                                </report_ws_username_live>    
+                                <report_ws_password_live translate="label">
+                                    <label>Adyen Reports ws password for Live</label>
+                                    <comment>The password of the ws user for Live</comment>
+                                    <frontend_type>text</frontend_type>
+                                    <sort_order>119</sort_order>
+                                    <show_in_default>1</show_in_default>
+                                    <show_in_website>1</show_in_website>
+                                    <show_in_store>0</show_in_store>
+                                </report_ws_password_live>
                                 <capture_mode translate="label">
                                     <label>Capture Delay</label>
                                     <frontend_type>select</frontend_type>
@@ -509,115 +544,6 @@
                                 <countryCode translate="label">
                                     <label>ISO Country Code (optional)</label>
                                     <tooltip>This will override the shopper billing address country when determining what payment methods to display.</tooltip>
-                                    <frontend_type>text</frontend_type>
-                                    <sort_order>100</sort_order>
-                                    <show_in_default>1</show_in_default>
-                                    <show_in_website>1</show_in_website>
-                                    <show_in_store>0</show_in_store>
-                                </ws_username_live>
-                                <ws_password_live translate="label">
-                                    <label>Adyen ws password for Live</label>
-                                    <comment>The password of the ws user for Live</comment>
-                                    <config_path>payment/adyen_abstract/ws_password_live</config_path>
-                                    <frontend_type>obscure</frontend_type>
-                                    <backend_model>adminhtml/system_config_backend_encrypted</backend_model>
-                                    <sort_order>110</sort_order>
-                                    <show_in_default>1</show_in_default>
-                                    <show_in_website>1</show_in_website>
-                                    <show_in_store>0</show_in_store>
-                                </ws_password_live>
-                                <ws_live_button translate="label">
-                                    <label></label>
-                                    <button_label>Test Webserver Credentials for live</button_label>
-                                    <config_path>payment/adyen_abstract/ws_live_button</config_path>
-                                    <modus>live</modus>
-                                    <frontend_model>adyen/adminhtml_system_config_testWebserverConfiguration</frontend_model>
-                                    <sort_order>111</sort_order>
-                                    <show_in_default>1</show_in_default>
-                                    <show_in_website>1</show_in_website>
-                                </ws_live_button>
-                                <report_ws_username_test translate="label">
-                                        <label>Adyen Reports ws username for Test</label>
-                                        <comment>Normally this will be ws@Company.YourCompanyCode</comment>
-                                        <frontend_type>text</frontend_type>
-                                        <sort_order>120</sort_order>
-                                        <show_in_default>1</show_in_default>
-                                        <show_in_website>1</show_in_website>
-                                        <show_in_store>0</show_in_store>
-                                </report_ws_username_test>    
-                                <report_ws_password_test translate="label">
-                                        <label>Adyen Reports ws password for Test</label>
-                                        <comment>The password of the ws user for Test</comment>
-                                        <frontend_type>text</frontend_type>
-                                        <sort_order>130</sort_order>
-                                        <show_in_default>1</show_in_default>
-                                        <show_in_website>1</show_in_website>
-                                        <show_in_store>0</show_in_store>
-                                </report_ws_password_test>    
-                                <report_ws_username_live translate="label">
-                                        <label>Adyen Reports ws username for Live</label>
-                                        <comment>Normally this will be ws@Company.YourCompanyCode</comment>
-                                        <frontend_type>text</frontend_type>
-                                        <sort_order>140</sort_order>
-                                        <show_in_default>1</show_in_default>
-                                        <show_in_website>1</show_in_website>
-                                        <show_in_store>0</show_in_store>
-                                </report_ws_username_live>    
-                                <report_ws_password_live translate="label">
-                                        <label>Adyen Reports ws password for Live</label>
-                                        <comment>The password of the ws user for Live</comment>
-                                        <frontend_type>text</frontend_type>
-                                        <sort_order>150</sort_order>
-                                        <show_in_default>1</show_in_default>
-                                        <show_in_website>1</show_in_website>
-                                        <show_in_store>0</show_in_store>
-                                </report_ws_password_live>
-                            </fields>
-                        </ws_api>
-
-
-                        <checkout_experience type="group" translate="label comment">
-                            <label>Checkout experience</label>
-                            <frontend_type>text</frontend_type>
-                            <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>
-                            <sort_order>220</sort_order>
-                            <frontend_model>adyen/adminhtml_system_config_fieldset_expanded</frontend_model>
-                            <fields>
-                                <payment_cancelled_redirect>
-                                    <label>Redirect to page after cancellation</label>
-                                    <frontend_type>select</frontend_type>
-                                    <source_model>adyen/source_cancelRedirect</source_model>
-                                    <config_path>payment/adyen_abstract/payment_cancelled_redirect</config_path>
-                                    <sort_order>10</sort_order>
-                                    <show_in_default>1</show_in_default>
-                                    <show_in_website>1</show_in_website>
-                                    <show_in_store>0</show_in_store>
-                                </payment_cancelled_redirect>
-                                <title_renderer>
-                                    <label>Title renderer</label>
-                                    <frontend_type>select</frontend_type>
-                                    <source_model>adyen/source_rendermode</source_model>
-                                    <config_path>payment/adyen_abstract/title_renderer</config_path>
-                                    <sort_order>20</sort_order>
-                                    <show_in_default>1</show_in_default>
-                                    <show_in_website>1</show_in_website>
-                                    <show_in_store>1</show_in_store>
-                                </title_renderer>
-                                <shopperlocale translate="label">
-                                    <label>Language locale (optional)</label>
-                                    <comment>Leave empty to let Magento decide (Ex: nl_NL)</comment>
-                                    <frontend_type>text</frontend_type>
-                                    <config_path>payment/adyen_abstract/shopperlocale</config_path>
-                                    <sort_order>180</sort_order>
-                                    <show_in_default>1</show_in_default>
-                                    <show_in_website>1</show_in_website>
-                                    <show_in_store>1</show_in_store>
-                                </shopperlocale>
-                                <countryCode translate="label">
-                                    <label>Country Code ISO (optional)</label>
-                                    <comment>Leave empty to let Adyen decide on IP-address (Ex: NL)</comment>
                                     <frontend_type>text</frontend_type>
                                     <config_path>payment/adyen_abstract/countryCode</config_path>
                                     <sort_order>190</sort_order>
@@ -962,20 +888,12 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>0</show_in_store>
                         </order_status>
-                        <allowspecific translate="label">
-                            <label>Payment to applicable countries</label>
-                            <frontend_type>allowspecific</frontend_type>
-                            <sort_order>49</sort_order>
-                            <source_model>adminhtml/system_config_source_payment_allspecificcountries</source_model>
-                            <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>
-                        </allowspecific>
-                        <specificcountry translate="label">
-                            <label>Payment to Specific countries</label>
-                            <frontend_type>multiselect</frontend_type>
-                            <sort_order>50</sort_order>
-                            <source_model>adminhtml/system_config_source_country</source_model>
+                        <recurring_payment_type translate="label">
+                            <label>Agreement Type</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adyen/source_recurringPaymentType</source_model>
+                            <config_path>payment/adyen_oneclick/recurring_payment_type</config_path>
+                            <sort_order>79</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
@@ -1022,11 +940,10 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>0</show_in_store>
                         </order_status>
-                        <recurringtypes translate="label">
-                            <label>Recurring Type</label>
-                            <comment>You can set different value for POS because you have to have the permission of the customer</comment>
-                            <frontend_type>select</frontend_type>
-                            <source_model>adyen/source_recurringType</source_model>
+                        <skinCode translate="label">
+                            <label>Skin Code</label>
+                            <tooltip>Copy and paste the skin code of the skin you want to use from Test Customer Area => Skins.</tooltip>
+                            <frontend_type>text</frontend_type>
                             <sort_order>30</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
@@ -1154,87 +1071,9 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                         </title>
-                        <sort_order translate="label">
-                            <label>Sort Order</label>
-                            <frontend_type>text</frontend_type>
-                            <sort_order>30</sort_order>
-                            <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>
-                        </sort_order>
-                        <order_status translate="label">
-                            <label>New order status</label>
-                            <comment>Select only status assigned to state new</comment>
-                            <frontend_type>select</frontend_type>
-                            <source_model>adminhtml/system_config_source_order_status_processing</source_model>
-                            <sort_order>31</sort_order>
-                            <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
-                            <show_in_store>0</show_in_store>
-                        </order_status>
-                        <create_shipment>
-                            <label>Create Shipment</label>
-                            <comment>If you enable this there will be automatically be created a shipment if the invoice is created</comment>
-                            <frontend_type>select</frontend_type>
-                            <source_model>adminhtml/system_config_source_yesno</source_model>
-                            <sort_order>35</sort_order>
-                            <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>
-                        </create_shipment>
-                        <cash_express_checkout>
-                            <label>Cash Express checkout</label>
-                            <comment>This will show a checkout buttton on the shopping cart to directly do a Cash payment without going to the checkout steps. Make sure that you have Cash enabled on your skin and HPP payment method is enabled and correctly configured. You must be logged into your magento account on the front-end to see the button</comment>
-                            <frontend_type>select</frontend_type>
-                            <source_model>adminhtml/system_config_source_yesno</source_model>
-                            <sort_order>39</sort_order>
-                            <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>
-                        </cash_express_checkout>
-                        <cash_drawer>
-                            <label>Open Cash Drawer</label>
-                            <comment>Open the Cash drawer if you connect this to your printer this works for all Epson ePOS-Device printers</comment>
-                            <frontend_type>select</frontend_type>
-                            <source_model>adminhtml/system_config_source_yesno</source_model>
-                            <sort_order>40</sort_order>
-                            <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>
-                        </cash_drawer>
-                        <cash_drawer_printer_ip>
-                            <label>IP address printer</label>
-                            <comment>Enter here the IP address of the printer where the cash drawer is connected to</comment>
-                            <frontend_type>text</frontend_type>
-                            <sort_order>41</sort_order>
-                            <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>
-                            <depends><cash_drawer>1</cash_drawer></depends>
-                        </cash_drawer_printer_ip>
-                        <cash_drawer_printer_port>
-                            <label>Printer port</label>
-                            <comment>Enter here the port number of the printer where the cash drawer is connected to</comment>
-                            <frontend_type>text</frontend_type>
-                            <sort_order>42</sort_order>
-                            <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>
-                            <depends><cash_drawer>1</cash_drawer></depends>
-                        </cash_drawer_printer_port>
-                        <cash_drawer_printer_device_id>
-                            <label>Printer Device ID</label>
-                            <comment>Enter here the deviceID of the printer where the cash drawer is connected to</comment>
-                            <frontend_type>text</frontend_type>
-                            <sort_order>43</sort_order>
-                            <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>
-                            <depends><cash_drawer>1</cash_drawer></depends>
-                        </cash_drawer_printer_device_id>
-                        <ip_filter>
-                            <label>IP filter</label>
-                            <comment>Enable IP filter let's you define an IP range when this payment method is visable</comment>
+                        <show_ideal_logos>
+                            <label>Show iDEAL bank logos</label>
+                            <tooltip>Show iDEAL bank logos (radio buttons) instead of dropdown</tooltip>
                             <frontend_type>select</frontend_type>
                             <source_model>adminhtml/system_config_source_yesno</source_model>
                             <sort_order>30</sort_order>
@@ -1253,13 +1092,22 @@
                         </fee>
                         <sort_order translate="label">
                             <label>Sort Order</label>
-			    <tooltip>Set the sequence number of this payment method in the checkout. Payment methods with a higher sort order number will be displayed lower in the list.</tooltip>
                             <frontend_type>text</frontend_type>
-                            <sort_order>40</sort_order>
+                            <sort_order>30</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                         </sort_order>
+                        <order_status translate="label">
+                            <label>New order status</label>
+                            <comment>Select only status assigned to state new</comment>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_order_status_processing</source_model>
+                            <sort_order>31</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </order_status>
                         <allowspecific translate="label">
                             <label>Payment to applicable countries</label>
                             <frontend_type>allowspecific</frontend_type>
@@ -1451,20 +1299,11 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>0</show_in_store>
                         </order_status>
-                        <cctypes translate="label">
-                            <label>Credit Card Types</label>
-                            <frontend_type>multiselect</frontend_type>
-                            <source_model>adyen/source_ccType</source_model>
-                            <sort_order>40</sort_order>
-                            <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>
-                        </cctypes>
-                        <cse_enabled translate="label">
-                            <label>Enable Client-Side Encryption</label>
+                        <validate_iban>
+                            <label>Validate Iban</label>
                             <frontend_type>select</frontend_type>
                             <source_model>adminhtml/system_config_source_yesno</source_model>
-                            <sort_order>30</sort_order>
+                            <sort_order>31</sort_order>
                             <tooltip>This is a basic validation on the Iban number.</tooltip>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
@@ -1795,7 +1634,7 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
-                        </sort_order>
+                        </ip_filter_to>
                         <order_status translate="label">
                             <label>New order status</label>
                             <comment>Select only status assigned to state new</comment>
@@ -1873,11 +1712,12 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>0</show_in_store>
                         </order_status>
-                        <delivery_days translate="label">
-                            <label>Days for Delivery</label>
-                            <comment>How many days to be added to the current date for delivery. ONLY numbers allowed.</comment>
-                            <frontend_type>text</frontend_type>
-                            <sort_order>30</sort_order>
+                        <create_shipment>
+                            <label>Create Shipment</label>
+                            <tooltip>If you enable this there will be automatically be created a shipment if the invoice is created</tooltip>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>35</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
@@ -2039,10 +1879,10 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>0</show_in_store>
                         </order_status>
-                        <validate_iban>
-                            <label>Validate Iban</label>
-                            <frontend_type>select</frontend_type>
-                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                        <session_validity>
+                            <label>Session Validity</label>
+                            <tooltip>How many days do you want this payment page to be active</tooltip>
+                            <frontend_type>text</frontend_type>
                             <sort_order>30</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
