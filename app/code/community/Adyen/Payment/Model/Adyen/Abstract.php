@@ -469,7 +469,7 @@ abstract class Adyen_Payment_Model_Adyen_Abstract extends Mage_Payment_Model_Met
                 Mage::getSingleton('customer/session')->setRedirectUrl("adyen/process/validate3d");
                 $this->_addStatusHistory($payment, $responseCode, $pspReference, $this->_getConfigData('order_status'));
                 break;
-			case "Cancelled": //added for FRAUD-CANCELLED refusal reasons
+            case "Cancelled": //added for FRAUD-CANCELLED refusal reasons
             case "Refused":
 
                 if($response->paymentResult->refusalReason) {
