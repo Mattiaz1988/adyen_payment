@@ -37,7 +37,7 @@ abstract class Adyen_Payment_Model_Adyen_Abstract extends Mage_Payment_Model_Met
     const VISIBLE_CHECKOUT = 'frontend';
     const VISIBLE_BOTH     = 'both';
 
-    private $_helperLog,$_helper;
+    private $_helperLog,$_helper,$_helperProcess;
     protected $_isGateway = false;
     protected $_canAuthorize = true;
     protected $_canCapture = true;
@@ -243,7 +243,7 @@ abstract class Adyen_Payment_Model_Adyen_Abstract extends Mage_Payment_Model_Met
             $this->writeLog("sendCaptureRequest pspReference : $pspReference amount: $amount");
             $merchantAccount = trim($this->_getConfigData('merchantAccount'));
 
-            if (!$this->_getHelper()->isAutoCapture($payment) && ($this->getCode() == 'adyen_cc' || $this->getCode() == 'adyen_oneclick' || $this->getCode() == 'adyen_hpp' || $this->getCode() == 'adyen_boleto' || $this->getCode() == 'adyen_elv' || $this->getCode() == 'adyen_sepa')) {
+            if (!$this->_getHelperProcess()->_isAutoCapture($order) && ($this->getCode() == 'adyen_cc' || $this->getCode() == 'adyen_oneclick' || $this->getCode() == 'adyen_hpp' || $this->getCode() == 'adyen_boleto' || $this->getCode() == 'adyen_elv' || $this->getCode() == 'adyen_sepa')) {
                 $_captureResponse = $this->_processRequest($payment, $amount, "capture", $pspReference);
 
                 $payment->setTransactionId((string) $merchantAccount . '-C-' . $_captureResponse->captureResult->pspReference)
@@ -808,7 +808,7 @@ abstract class Adyen_Payment_Model_Adyen_Abstract extends Mage_Payment_Model_Met
     }
 
 
-	protected function _getHelperLog() {
+    protected function _getHelperLog() {
         if (!$this->_helperLog) {
             $this->_helperLog = Mage::helper('adyen/log');
         }
@@ -820,6 +820,13 @@ abstract class Adyen_Payment_Model_Adyen_Abstract extends Mage_Payment_Model_Met
             $this->_helper = Mage::helper('adyen');
         }
         return $this->_helper;
+    }
+    
+    protected function _getHelperProcess() {
+        if (!$this->_helperProcess) {
+            $this->_helperProcess = Mage::helper('adyen/process');
+        }
+        return $this->_helperProcess;
     }
 
 
