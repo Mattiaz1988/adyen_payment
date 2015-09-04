@@ -296,7 +296,7 @@
                 <create_pending_invoice>0</create_pending_invoice>
                 <recurringtypes>ONECLICK</recurringtypes>
                 <auto_capture_openinvoice>0</auto_capture_openinvoice>
-                <paypal_capture_mode>0</paypal_capture_mode>
+                <paypal_capture_mode>auto</paypal_capture_mode>
                 <send_email_bank_sepa_on_pending>0</send_email_bank_sepa_on_pending>
                 <title_renderer>title_image</title_renderer>
                 <ignore_refund_notification>0</ignore_refund_notification>
@@ -320,7 +320,7 @@
                 <allowspecific>0</allowspecific>
                 <disable_hpptypes>0</disable_hpptypes>
                 <sort_order>30</sort_order>
-                <return_url_in_request>0</return_url_in_request>
+                <return_url_in_request>1</return_url_in_request>
             </adyen_hpp>
             <adyen_ideal translate="title" module="adyen">
                 <active>0</active>
@@ -385,7 +385,7 @@
                 <title>Adyen Credit Card</title>
                 <debug>0</debug>
                 <enable_installments>0</enable_installments>
-                <cse_enabled>0</cse_enabled>
+                <cse_enabled>1</cse_enabled>
                 <cse_public_key></cse_public_key>
                 <visible_type>both</visible_type>
                 <enable_moto>0</enable_moto>
