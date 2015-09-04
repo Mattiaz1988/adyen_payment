@@ -37,7 +37,6 @@ class Adyen_Payment_Model_Adyen_Cc extends Adyen_Payment_Model_Adyen_Abstract
     protected $_canUseCheckout = true;
     protected $_canUseInternal = true;
     protected $_isGateway = true;
-    protected $_ccTypes;
 
     const CODE = "adyen_cc";
 
