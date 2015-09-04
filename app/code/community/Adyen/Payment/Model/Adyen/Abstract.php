@@ -224,37 +224,37 @@ abstract class Adyen_Payment_Model_Adyen_Abstract extends Mage_Payment_Model_Met
      */
     public function capture(Varien_Object $payment, $amount) {
         parent::capture($payment, $amount);
-        $payment->setStatus(self::STATUS_APPROVED)
-            ->setTransactionId($this->getTransactionId())
-            ->setIsTransactionClosed(0);
 
         // do capture request to adyen
         $order = $payment->getOrder();
-        $pspReference = Mage::getModel('adyen/event')->getOriginalPspReference($order->getIncrementId());
-        $order->getPayment()->getMethodInstance()->sendCaptureRequest($payment, $amount, $pspReference);
-
-		// processing payment
+        //get order original pspReference
+        $incrementOrderId = $order->getIncrementId();
+        $pspReference = Mage::getModel('adyen/event')->getOriginalPspReference($incrementOrderId);
+        
+	// processing payment
         try {
-            $pspReference = Mage::getModel('adyen/event')->getOriginalPspReference($payment->getOrder()->getIncrementId());
+
             //fix for unreceived notifications from adyen_hpp payment methods
             if(!$pspReference){
                 $pspReference = $payment->getAdyenPspReference();
             }
-            $this->writeLog("sendCaptureRequest pspReference : $pspReference amount: $amount");
             $merchantAccount = trim($this->_getConfigData('merchantAccount'));
 
             if (!$this->_getHelperProcess()->_isAutoCapture($order) && ($this->getCode() == 'adyen_cc' || $this->getCode() == 'adyen_oneclick' || $this->getCode() == 'adyen_hpp' || $this->getCode() == 'adyen_boleto' || $this->getCode() == 'adyen_elv' || $this->getCode() == 'adyen_sepa')) {
-                $_captureResponse = $this->_processRequest($payment, $amount, "capture", $pspReference);
+                $_captureResponse = $order->getPayment()->getMethodInstance()->sendCaptureRequest($payment, $amount, $pspReference);
 
                 $payment->setTransactionId((string) $merchantAccount . '-C-' . $_captureResponse->captureResult->pspReference)
                         ->setTransactionAdditionalInfo(Mage_Sales_Model_Order_Payment_Transaction::RAW_DETAILS, $this->_getHelper()->getResponseArray(json_decode(json_encode($_captureResponse), true)));
             }
 
-            $payment->setAmount($amount)
+             $payment->setAmount($amount)
+                    ->setStatus(self::STATUS_APPROVED)
+                    ->setIsTransactionClosed(0)
                     ->setShouldCloseParentTransaction($payment->getShouldCloseParentTransaction());
+             
         } catch (Exception $e) {
             $this->_getHelperLog()->log($e->getMessage(), "capture");
-            Mage::throwException('capture ' . $incrmentOrderId . ': ' . $e->getMessage());
+            Mage::throwException('capture ' . $incrementOrderId . ': ' . $e->getMessage());
         }
 
         return $this;
@@ -282,7 +282,7 @@ abstract class Adyen_Payment_Model_Adyen_Abstract extends Mage_Payment_Model_Met
             return $this;
         }
         
-		$this->writeLog("sendRefundRequest pspReference : $pspReference amount: $amount");
+	$this->writeLog("sendRefundRequest pspReference : $pspReference amount: $amount");
         try {
             
             /* $canRefundMore to 1 if a partial refound is requested */
@@ -311,10 +311,9 @@ abstract class Adyen_Payment_Model_Adyen_Abstract extends Mage_Payment_Model_Met
             return $this;
         }
 
-		$this->writeLog("sendCancelOrRefundRequest pspReference : $pspReference");
+	$this->writeLog("sendCancelOrRefundRequest pspReference : $pspReference");
         try {
             $_refundResponse = $this->_processRequest($payment, null, "cancel_or_refund", $pspReference);
-
 
             $merchantAccount = trim($this->_getConfigData('merchantAccount'));
 
@@ -531,7 +530,6 @@ abstract class Adyen_Payment_Model_Adyen_Abstract extends Mage_Payment_Model_Met
             ->setCreatedAt(now())
             ->saveData()
         ;
-        return $this;
     }
 
     /**

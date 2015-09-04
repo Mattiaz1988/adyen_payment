@@ -27,7 +27,7 @@
  */
 class Adyen_Payment_Model_Adyen_Data_PaymentRequest3d extends Adyen_Payment_Model_Adyen_Data_Abstract {
     
-	public $merchantAccount;
+    public $merchantAccount;
     public $browserInfo;
     public $md;
     public $paResponse;
@@ -42,9 +42,9 @@ class Adyen_Payment_Model_Adyen_Data_PaymentRequest3d extends Adyen_Payment_Mode
         $this->merchantAccount = $merchantAccount;
         $this->browserInfo->acceptHeader = $_SERVER['HTTP_ACCEPT'];
         $this->browserInfo->userAgent = $_SERVER['HTTP_USER_AGENT'];
-        $this->shopperIP = $_SERVER['REMOTE_ADDR'];
-		$this->md = $payment->getAdditionalInformation('md');
-		$this->paResponse = $payment->getAdditionalInformation('paResponse');
+        $this->shopperIP = $_SERVER['HTTP_X_FORWARDED_FOR'] ? $_SERVER['HTTP_X_FORWARDED_FOR'] : $_SERVER['REMOTE_ADDR'];
+	$this->md = $payment->getAdditionalInformation('md');
+	$this->paResponse = $payment->getAdditionalInformation('paResponse');
         return $this;
     }    
 }

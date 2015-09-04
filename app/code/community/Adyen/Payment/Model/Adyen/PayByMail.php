@@ -158,7 +158,7 @@ class Adyen_Payment_Model_Adyen_PayByMail extends Adyen_Payment_Model_Adyen_Abst
         $merchantAccount   = trim($this->_getConfigData('merchantAccount', null, $order->getStoreId()));
         $shopperEmail      = $order->getCustomerEmail();
         $customerId        = $order->getCustomerId();
-        $shopperIP         = $order->getRemoteIp();
+        $shopperIP         = $order->getXForwardedFor() ? $order->getXForwardedFor() : $order->getRemoteIp();
         $browserInfo       = $_SERVER['HTTP_USER_AGENT'];
         $shopperLocale     = trim($this->_getConfigData('shopperlocale', null, $order->getStoreId()));
         $shopperLocale     = (!empty($shopperLocale)) ? $shopperLocale : Mage::app()->getLocale()->getLocaleCode();

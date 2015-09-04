@@ -151,7 +151,7 @@ class Adyen_Payment_Model_Adyen_Hpp extends Adyen_Payment_Model_Adyen_Abstract
         $merchantAccount   = trim($this->_getConfigData('merchantAccount'));
         $shopperEmail      = $order->getCustomerEmail();
         $customerId        = $order->getCustomerId();
-        $shopperIP         = $order->getRemoteIp();
+        $shopperIP         = $order->getXForwardedFor() ? $order->getXForwardedFor() : $order->getRemoteIp();
         $browserInfo       = $_SERVER['HTTP_USER_AGENT'];
         $shopperLocale     = trim($this->_getConfigData('shopperlocale'));
         $shopperLocale     = (!empty($shopperLocale)) ? $shopperLocale : Mage::app()->getLocale()->getLocaleCode();

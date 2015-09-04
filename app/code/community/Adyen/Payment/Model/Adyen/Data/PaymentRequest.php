@@ -90,7 +90,7 @@ class Adyen_Payment_Model_Adyen_Data_PaymentRequest extends Adyen_Payment_Model_
         //shopper data
         $customerEmail = $order->getCustomerEmail();
         $this->shopperEmail = $customerEmail;
-        $this->shopperIP = $order->getRemoteIp();
+        $this->shopperIP = $order->getXForwardedFor() ? $order->getXForwardedFor() : $order->getRemoteIp();
         $this->shopperReference = (!empty($customerId)) ? $customerId : self::GUEST_ID . $realOrderId;
 
         // Set the recurring contract
