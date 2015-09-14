@@ -980,4 +980,51 @@ abstract class Adyen_Payment_Model_Adyen_Abstract extends Mage_Payment_Model_Met
 
         return $recurringContractDetail;
     }
+    
+    protected function _addTransaction(&$payment, $type, $failsafe = false)
+    {
+
+        // look for set transaction ids
+        $transactionId = $payment->getLastTransId();
+        if (null !== $transactionId) {
+            // set transaction parameters
+            $transaction = Mage::getModel('sales/order_payment_transaction')->setTxnId($transactionId);
+
+            $transaction
+                ->setOrderPaymentObject($payment)
+                ->setTxnType($type)
+                ->isFailsafe($failsafe);
+
+            //set transaction addition information
+            if ($payment->getTransactionAdditionalInfo()) {
+                foreach ($payment->getTransactionAdditionalInfo() as $key => $value) {
+                    $transaction->setAdditionalInformation($key, $value);
+                }
+            }
+
+            // link with sales entities
+            $payment->setCreatedTransaction($transaction);
+            $payment->getOrder()->addRelatedObject($transaction);
+
+            return $transaction;
+        }
+    }
+    
+    
+    
+    /**
+     * Append transaction ID (if any) message to the specified message
+     *
+     * @param Mage_Sales_Model_Order_Payment_Transaction|null $transaction
+     * @param string $message
+     * @return string
+     */
+    protected function _appendTransactionToMessage($transaction, $message)
+    {
+        if ($transaction) {
+            $txnId = is_object($transaction) ? $transaction->getHtmlTxnId() : $transaction;
+            $message .= ' ' . Mage::helper('sales')->__('Transaction ID: "%s".', $txnId);
+        }
+        return $message;
+    }
 }
