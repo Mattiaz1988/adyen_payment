@@ -311,7 +311,6 @@ abstract class Adyen_Payment_Model_Adyen_Abstract extends Mage_Payment_Model_Met
             $transactionSave->save();
        }
        catch (Exception $e) {
-         var_dump($e->getMessage());exit;
             $responseCode = 'Refused';
             $this->_getHelperLog()->log($e->getMessage(), "authorise3d");
 

@@ -208,7 +208,6 @@ class Adyen_Payment_ProcessController extends Mage_Core_Controller_Front_Action 
                         $result = $payment->getMethodInstance()->authorise3d($payment, $order->getGrandTotal());
                         $order->setAdyenEventCode($result)->save();
 
-                        var_dump($result);exit;
                         // check if authorise3d was successful
                         if ($result == 'Authorised') {
                             $order->setState(Mage_Sales_Model_Order::STATE_PAYMENT_REVIEW, true,

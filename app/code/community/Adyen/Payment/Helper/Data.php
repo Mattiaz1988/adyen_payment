@@ -597,7 +597,7 @@ class Adyen_Payment_Helper_Data extends Mage_Payment_Helper_Data
      * @param null|string $currency
      * @return string
      */
-    protected function _formatPrice($payment, $amount, $currency = null)
+    public function _formatPrice($payment, $amount, $currency = null)
     {
         return $payment->getOrder()->getBaseCurrency()->formatTxt(
             $amount,
