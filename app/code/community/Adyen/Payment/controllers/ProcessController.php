@@ -205,12 +205,8 @@ class Adyen_Payment_ProcessController extends Mage_Core_Controller_Front_Action 
                     if ($requestMD == $md) {
                         $payment->setAdditionalInformation('paResponse', $requestPaRes);
                         // send autorise3d request, catch exception in case of 'Refused'
-                        try {
-                            $result = $payment->getMethodInstance()->authorise3d($payment, $order->getGrandTotal());
-                        } catch (Exception $e) {
-                            $result = 'Refused';
-                            $order->setAdyenEventCode($result)->save();
-                        }
+                        $result = $payment->getMethodInstance()->authorise3d($payment, $order->getGrandTotal());
+                        $order->setAdyenEventCode($result)->save();
 
                         // check if authorise3d was successful
                         if ($result == 'Authorised') {

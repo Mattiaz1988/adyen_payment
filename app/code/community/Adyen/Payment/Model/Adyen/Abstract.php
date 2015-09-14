@@ -200,20 +200,25 @@ abstract class Adyen_Payment_Model_Adyen_Abstract extends Mage_Payment_Model_Met
                         }
                     }
                     $_authorizeResponse = $this->_processRequest($payment, $amount, "authorise");
+                    
+                    //added 3DS check in order to create transaction row only for non-3DS auth
+                    if(!$this->_getHelper()->is3DSAuth($payment)){
+                        //added unique trans ID with merchant and type of request behind pspreference
+                        $payment->setLastTransId((string) $merchantAccount . '-A-' . $_authorizeResponse->paymentResult->pspReference)
+                            ->setTransactionId((string) $merchantAccount . '-A-' . $_authorizeResponse->paymentResult->pspReference)
+                            ->setAdyenPspReference((string) $_authorizeResponse->paymentResult->pspReference)
+                            //raw details is very important for trx debugging in order to get needed data from each succesfull response    
+                            ->setTransactionAdditionalInfo(Mage_Sales_Model_Order_Payment_Transaction::RAW_DETAILS, $this->_getHelper()->getResponseArray(json_decode(json_encode($_authorizeResponse), true)));
 
-                            //added unique trans ID with merchant and type of request behind pspreference
-                            $payment->setLastTransId((string) $merchantAccount . '-A-' . $_authorizeResponse->paymentResult->pspReference)
-                                    ->setTransactionId((string) $merchantAccount . '-A-' . $_authorizeResponse->paymentResult->pspReference)
-                                    ->setAdyenPspReference((string) $_authorizeResponse->paymentResult->pspReference)
-                                    //raw details is very important for trx debugging in order to get needed data from each succesfull response                        
-                                    ->setTransactionAdditionalInfo(Mage_Sales_Model_Order_Payment_Transaction::RAW_DETAILS, $this->_getHelper()->getResponseArray(json_decode(json_encode($_authorizeResponse), true)));
+                        $payment->setData('payer_country', $this->_getHelper()->getAdditionalInformationField('issuerCountry',$payment->getTransactionAdditionalInfo()));
+
+                        $payment->setAmount($amount)
+                                ->setStatus(self::STATUS_APPROVED)
+                                ->setIsTransactionClosed(false)
+                                ->setIsTransactionPending(false); //to prevent fraud    
+                    }
 
                 }
-
-                $payment->setAmount($amount)
-                    ->setStatus(self::STATUS_APPROVED)
-                    ->setIsTransactionClosed(false)
-                    ->setIsTransactionPending(false);
 
         } catch (Exception $e) {
             $this->_getHelperLog()->log($e->getMessage(), "authorise");
@@ -267,9 +272,52 @@ abstract class Adyen_Payment_Model_Adyen_Abstract extends Mage_Payment_Model_Met
 
 
     public function authorise3d(Varien_Object $payment, $amount) {
-        $authorizeResponse = $this->_processRequest($payment, $amount, "authorise3d");
-        $responseCode = $authorizeResponse->paymentResult->resultCode;
-        return $responseCode;
+        $order = $payment->getOrder();
+        
+        //added try/catch for better fault-tolerance management
+        try{
+          
+            $incrementOrderId = $order->getIncrementId();
+            $this->_getHelperLog()->log("sendAuthorise3DRequest orderId : " . $incrementOrderId . " amount: $amount", "authorise");
+            $merchantAccount = trim($this->_getConfigData('merchantAccount'));
+            
+            $_authorizeResponse = $this->_processRequest($payment, $amount, "authorise3d");
+            $responseCode = $_authorizeResponse->paymentResult->resultCode;
+
+            $payment->setLastTransId((string) $merchantAccount . '-A-' . $_authorizeResponse->paymentResult->pspReference)
+                    ->setTransactionId((string) $merchantAccount . '-A-' . $_authorizeResponse->paymentResult->pspReference)
+                    ->setAdyenPspReference((string) $_authorizeResponse->paymentResult->pspReference)
+                    ->setTransactionAdditionalInfo(Mage_Sales_Model_Order_Payment_Transaction::RAW_DETAILS, $this->_getHelper()->getResponseArray(json_decode(json_encode($_authorizeResponse), true)));
+
+            $payment->setData('payer_country', $this->_getHelper()->getAdditionalInformationField('issuerCountry',$payment->getTransactionAdditionalInfo()));
+
+            $payment->setAmount($amount)
+                     ->setStatus(self::STATUS_APPROVED)
+                     ->setIsTransactionClosed(false)
+                     ->setIsTransactionPending(false); //to prevent fraud
+            
+            
+            $message = Mage::helper('sales')->__('Authorized 3DS online amount of %s.', $this->_formatPrice($payment, $amount));
+            // update transactions, order state and add comments
+            $transaction = $this->_addTransaction($payment, Mage_Sales_Model_Order_Payment_Transaction::TYPE_AUTH);
+            $message = $this->_appendTransactionToMessage($transaction, $message);
+
+            $order->setState(Mage_Sales_Model_Order::STATE_PROCESSING, $this->_getConfigData('order_status', $this->_code, $order->getStoreId()), $message);
+            
+            $transactionSave = Mage::getModel('core/resource_transaction')
+                    ->addObject($order)
+                    ->addObject($payment);
+            
+            $transactionSave->save();
+       }
+       catch (Exception $e) {
+         
+            $responseCode = 'Refused';
+            $this->_getHelperLog()->log($e->getMessage(), "authorise3d");
+
+       }
+
+       return $responseCode;
     }
 
     public function sendCaptureRequest(Varien_Object $payment, $amount, $pspReference) {
@@ -411,7 +459,6 @@ abstract class Adyen_Payment_Model_Adyen_Abstract extends Mage_Payment_Model_Met
         $cacheKey = $merchantAccount . "|" . $payment->getOrder()->getCustomerId() . "|" . $recurringType;
         Mage::app()->getCache()->remove($cacheKey);
 
-        //return $this;
         return $response;
     }
 
