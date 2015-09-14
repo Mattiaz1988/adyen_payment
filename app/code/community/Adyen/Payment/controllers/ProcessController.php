@@ -210,8 +210,9 @@ class Adyen_Payment_ProcessController extends Mage_Core_Controller_Front_Action 
 
                         // check if authorise3d was successful
                         if ($result == 'Authorised') {
-                            $order->setState(Mage_Sales_Model_Order::STATE_PAYMENT_REVIEW, true,
-                                Mage::helper('adyen')->__('3D-secure validation was successful.'))->save();
+                            $message = "3D-secure validation was successful.";
+                            $order->addStatusHistoryComment(Mage::helper('adyen')->__($message))->save();
+                            $this->_getHelperLog()->log($message, "authorise3d");
                             $this->_redirect('checkout/onepage/success');
                         } else {
                             //debugging log
