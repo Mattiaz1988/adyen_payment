@@ -576,6 +576,20 @@ class Adyen_Payment_Helper_Data extends Mage_Payment_Helper_Data
         }
         return $street;
     }
+    
+    /**
+     * 
+     * @param Varien_Object $paymentformatPrice
+     * @return bool
+     */
+    public function is3DSAuth(Varien_Object $payment){
+        
+        if($payment->getMethodInstance()->getCode() != 'adyen_cc' && !$payment->getMethodInstance()->getCode() == 'adyen_oneclick'){
+            return false;
+        }
+
+        return $payment->getAdditionalInformation("paRequest") && $payment->getAdditionalInformation("md") && $payment->getAdditionalInformation("issuerUrl");
+    }
 
     
     /**
