@@ -277,8 +277,8 @@ abstract class Adyen_Payment_Model_Adyen_Abstract extends Mage_Payment_Model_Met
         //added try/catch for better fault-tolerance management
         try{
           
-            $incrmentOrderId = $order->getIncrementId();
-            $this->_getHelperLog()->log("sendAuthorise3DRequest orderId : " . $incrmentOrderId . " amount: $amount", "authorise");
+            $incrementOrderId = $order->getIncrementId();
+            $this->_getHelperLog()->log("sendAuthorise3DRequest orderId : " . $incrementOrderId . " amount: $amount", "authorise");
             $merchantAccount = trim($this->_getConfigData('merchantAccount'));
             
             $_authorizeResponse = $this->_processRequest($payment, $amount, "authorise3d");
