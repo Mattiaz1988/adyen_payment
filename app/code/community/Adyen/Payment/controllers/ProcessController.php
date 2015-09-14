@@ -208,16 +208,18 @@ class Adyen_Payment_ProcessController extends Mage_Core_Controller_Front_Action 
                         $result = $payment->getMethodInstance()->authorise3d($payment, $order->getGrandTotal());
                         $order->setAdyenEventCode($result)->save();
 
+                        var_dump($result);exit;
                         // check if authorise3d was successful
                         if ($result == 'Authorised') {
                             $order->setState(Mage_Sales_Model_Order::STATE_PAYMENT_REVIEW, true,
                                 Mage::helper('adyen')->__('3D-secure validation was successful.'))->save();
                             $this->_redirect('checkout/onepage/success');
                         } else {
-                            //mattia. debugging log
-                            $this->_getHelperLog()->log("3D-secure validation was unsuccessful", "authorise3d");
-                            $order->addStatusHistoryComment(Mage::helper('adyen')->__('3D-secure validation was unsuccessful.'))->save();
-                            $session->addException($e, Mage::helper('adyen')->__($e->getMessage()));
+                            //debugging log
+                            $message = "3D-secure validation was unsuccessful";
+                            $this->_getHelperLog()->log($message, "authorise3d");
+                            $order->addStatusHistoryComment(Mage::helper('adyen')->__($message))->save();
+                            Mage::throwException(Mage::helper('adyen')->__($message));
                             $this->cancel();
                         }
                     }
@@ -227,7 +229,6 @@ class Adyen_Payment_ProcessController extends Mage_Core_Controller_Front_Action 
                     }
 
                 }
-
                 // otherwise, redirect to the external URL
                 else {
                     $order->setState(Mage_Sales_Model_Order::STATE_PENDING_PAYMENT, true,

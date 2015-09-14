@@ -590,6 +590,20 @@ class Adyen_Payment_Helper_Data extends Mage_Payment_Helper_Data
 
         return $payment->getAdditionalInformation("paRequest") && $payment->getAdditionalInformation("md") && $payment->getAdditionalInformation("issuerUrl");
     }
+    
+    /**
+     * Format price with currency sign
+     * @param float $amount
+     * @param null|string $currency
+     * @return string
+     */
+    protected function _formatPrice($payment, $amount, $currency = null)
+    {
+        return $payment->getOrder()->getBaseCurrency()->formatTxt(
+            $amount,
+            $currency ? array('currency' => $currency) : array()
+        );
+    }
 
     
     /**

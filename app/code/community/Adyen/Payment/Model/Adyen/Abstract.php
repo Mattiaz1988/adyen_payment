@@ -297,7 +297,7 @@ abstract class Adyen_Payment_Model_Adyen_Abstract extends Mage_Payment_Model_Met
                      ->setIsTransactionPending(false); //to prevent fraud
             
             
-            $message = Mage::helper('sales')->__('Authorized 3DS online amount of %s.', $this->_formatPrice($payment, $amount));
+            $message = Mage::helper('sales')->__('Authorized 3DS online amount of %s.', $this->_getHelper()->_formatPrice($payment, $amount));
             // update transactions, order state and add comments
             $transaction = $this->_addTransaction($payment, Mage_Sales_Model_Order_Payment_Transaction::TYPE_AUTH);
             $message = $this->_appendTransactionToMessage($transaction, $message);
@@ -311,7 +311,7 @@ abstract class Adyen_Payment_Model_Adyen_Abstract extends Mage_Payment_Model_Met
             $transactionSave->save();
        }
        catch (Exception $e) {
-         
+         var_dump($e->getMessage());exit;
             $responseCode = 'Refused';
             $this->_getHelperLog()->log($e->getMessage(), "authorise3d");
 
