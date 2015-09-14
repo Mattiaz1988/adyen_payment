@@ -193,7 +193,7 @@ abstract class Adyen_Payment_Model_Adyen_Abstract extends Mage_Payment_Model_Met
                             $agreement->addOrderRelation($order);
                             $agreement->setIsObjectChanged(true);
                             $order->addRelatedObject($agreement);
-                            $message = Mage::helper('adyen')->__('Used existing billing agreement #%s.', $agreement->getReferenceId());
+                            $message = $this->_getHelper()->__('Used existing billing agreement #%s.', $agreement->getReferenceId());
 
                             $comment = $order->addStatusHistoryComment($message);
                             $order->addRelatedObject($comment);
@@ -550,7 +550,7 @@ abstract class Adyen_Payment_Model_Adyen_Abstract extends Mage_Payment_Model_Met
         }
 
         $type = 'Adyen Result URL Notification(s):';
-        $comment = Mage::helper('adyen')->__('%s <br /> authResult: %s <br /> pspReference: %s <br /> paymentMethod: %s', $type, $responseCode, $pspReference, "");
+        $comment = $this->_getHelper()->__('%s <br /> authResult: %s <br /> pspReference: %s <br /> paymentMethod: %s', $type, $responseCode, $pspReference, "");
         $payment->getOrder()->setAdyenEventCode($responseCode);
         $payment->getOrder()->addStatusHistoryComment($comment, $status);
         $payment->setAdyenEventCode($responseCode);
@@ -773,7 +773,7 @@ abstract class Adyen_Payment_Model_Adyen_Abstract extends Mage_Payment_Model_Met
     }
 
     public function getAvailableBoletoTypes() {
-        $types = Mage::helper('adyen')->getBoletoTypes();
+        $types = $this->_getHelper()->getBoletoTypes();
         $availableTypes = $this->_getConfigData('boletotypes', 'adyen_boleto');
         if ($availableTypes) {
             $availableTypes = explode(',', $availableTypes);
@@ -889,7 +889,6 @@ abstract class Adyen_Payment_Model_Adyen_Abstract extends Mage_Payment_Model_Met
         Mage::dispatchEvent('adyen_payment_update_billing_agreement_status', array('agreement' => $agreement));
 
         $targetStatus = $agreement->getStatus();
-        $adyenHelper = Mage::helper('adyen');
 
         if ($targetStatus == Mage_Sales_Model_Billing_Agreement::STATUS_CANCELED) {
             try {
@@ -899,12 +898,12 @@ abstract class Adyen_Payment_Model_Adyen_Abstract extends Mage_Payment_Model_Met
                     $agreement->getStoreId()
                 );
             } catch (Adyen_Payment_Exception $e) {
-                Mage::throwException($adyenHelper->__(
+                Mage::throwException($this->_getHelper()->__(
                     "Error while disabling Billing Agreement #%s: %s", $agreement->getReferenceId(), $e->getMessage()
                 ));
             }
         } else {
-            throw new Exception(Mage::helper('adyen')->__(
+            throw new Exception($this->_getHelper()->__(
                 'Changing billing agreement status to "%s" not yet implemented.', $targetStatus
             ));
         }
@@ -926,7 +925,7 @@ abstract class Adyen_Payment_Model_Adyen_Abstract extends Mage_Payment_Model_Met
         );
 
         if (! $recurringContractDetail) {
-            Adyen_Payment_Exception::throwException(Mage::helper('adyen')->__(
+            Adyen_Payment_Exception::throwException($this->_getHelper()->__(
                 'The recurring contract (%s) could not be retrieved', $agreement->getReferenceId()
             ));
         }
