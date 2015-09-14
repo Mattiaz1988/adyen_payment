@@ -595,7 +595,7 @@ class Adyen_Payment_ProcessController extends Mage_Core_Controller_Front_Action 
      *
      * @return type
      */
-    protected function getHelperLog() {
+    protected function _getHelperLog() {
         if (!$this->_helperLog) {
             $this->_helperLog = Mage::helper('adyen/log');
         }
